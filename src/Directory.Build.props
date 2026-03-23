@@ -1,0 +1,26 @@
+<Project>
+  <PropertyGroup>
+    <Authors>Frank Hommers</Authors>
+    <Company>Initialize.nl</Company>
+    <Copyright>Copyright (c) Frank Hommers / Initialize.nl</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/apigen-dotnet/keycloak</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/apigen-dotnet/keycloak</RepositoryUrl>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Apigen.Keycloak.Admin.Models'">
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Apigen.Keycloak.Admin.Client'">
+    <PackageId>Apigen.Keycloak.Admin.Client</PackageId>
+    <Version>26.0.0</Version>
+    <Description>Generated C# client for the Keycloak Admin REST API</Description>
+    <PackageTags>keycloak;api;client;openapi;apigen;admin</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(MSBuildProjectName)' == 'Apigen.Keycloak.Admin.Client'">
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+</Project>

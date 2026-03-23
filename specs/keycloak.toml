@@ -1,0 +1,78 @@
+# ApiGenerator Configuration File
+# Keycloak Admin REST API Client
+
+input_path = "specs/keycloak.yaml"
+output_path = "src"
+target_framework = "net10.0"
+generate_nullable_reference_types = true
+generate_data_annotations = true
+
+# Global using statements added to all generated files
+global_usings = [
+    "System.Text.Json.Serialization",
+    "System.Runtime.Serialization"
+]
+
+# Models Generation Settings
+[models]
+namespace = "Apigen.Keycloak.Admin.Models"
+project_name = "Apigen.Keycloak.Admin.Models"
+
+# Model generation strategy
+[model_generation]
+strategy = "SeparateWithDeduplication"
+request_suffix = "Request"
+response_suffix = ""
+generate_to_request_extensions = true
+
+# Enum generation configuration
+[enum_generation]
+generation_mode = "Raw"  # Use simple, clean enum generation
+add_json_string_enum_converter = true  # Add JsonStringEnumConverter attribute to enums
+add_json_string_enum_member_name = true  # Add JsonStringEnumMemberName attributes for explicit mapping (.NET 9+)
+
+# JSON Serialization Settings
+[serialization]
+nullable_for_optional_properties = true  # Make optional value types nullable (e.g., int? instead of int)
+ignore_condition = "WhenWritingNull"  # Don't serialize null values
+
+# API Client Generation Settings
+[client]
+generate_client = true
+namespace = "Apigen.Keycloak.Admin.Client"
+project_name = "Apigen.Keycloak.Admin.Client"
+client_class_name = "KeycloakAdminClient"
+use_async_suffix = true
+generate_interfaces = true
+use_ilogger = true
+
+# Request class organization
+[client.request_organization]
+strategy = "individual_files"
+directory = "Requests"
+include_base_classes = true
+
+# Authentication settings (Keycloak uses Bearer token)
+[client.authentication]
+token_header = "Authorization"
+required_headers = []
+
+# Naming convention overrides
+[naming]
+
+# TODO: Need to add property_name_override feature to handle "x5t#S256"
+# which contains # character (invalid in C# property names)
+
+# Code formatting preferences
+[formatting]
+use_spaces = true
+indent_width = 2
+
+# Auto-generated file headers
+[header]
+include_header = true
+include_timestamp = false
+include_source = true
+include_generator_info = true
+include_config_info = false
+custom_text = "Keycloak Admin REST API Models - Auto-generated from OpenAPI specification"

@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Apigen.Keycloak.Admin.Client/Apigen.Keycloak.Admin.Client.csproj" />
+    <Project Path="src/Apigen.Keycloak.Admin.Models/Apigen.Keycloak.Admin.Models.csproj" />
+  </Folder>
+</Solution>

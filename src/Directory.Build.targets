@@ -1,0 +1,10 @@
+<Project>
+  <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Apigen.Keycloak.Admin.Client'">
+    <TargetsForTfmSpecificBuildOutput>$(TargetsForTfmSpecificBuildOutput);IncludeModelsInPackage</TargetsForTfmSpecificBuildOutput>
+  </PropertyGroup>
+  <Target Name="IncludeModelsInPackage">
+    <ItemGroup>
+      <BuildOutputInPackage Include="$(OutputPath)Apigen.Keycloak.Admin.Models.dll" />
+    </ItemGroup>
+  </Target>
+</Project>
