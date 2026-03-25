@@ -57,15 +57,25 @@ jobs:
 
       - name: Create Pull Request
         if: steps.config.outputs.skip != 'true' && steps.diff.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          branch: update-openapi-spec
-          commit-message: "chore: update upstream OpenAPI spec"
-          title: "chore: update upstream OpenAPI spec"
-          body: |
-            Automated update of the upstream OpenAPI specification.
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -b update-openapi-spec
+          git add "${{ steps.config.outputs.target }}"
+          git commit -m "chore: update upstream OpenAPI spec"
+          git push -f origin update-openapi-spec
 
-            Downloaded from: `${{ steps.config.outputs.url }}`
+          EXISTING_PR=$(gh pr list --head update-openapi-spec --json number --jq '.[0].number')
+          if [ -n "$EXISTING_PR" ]; then
+            echo "PR #$EXISTING_PR already exists, branch updated"
+          else
+            gh pr create \
+              --title "chore: update upstream OpenAPI spec" \
+              --body "Automated update of the upstream OpenAPI specification.
 
-            Please review the changes and merge if appropriate.
-          delete-branch: true
+          Downloaded from: \`${{ steps.config.outputs.url }}\`
+
+          Please review the changes and merge if appropriate."
+          fi
