@@ -18,6 +18,7 @@ tags:
 - name: Identity Providers
 - name: Key
 - name: Organizations
+  x-smallrye-profile-admin: ""
 - name: Protocol Mappers
 - name: Realms Admin
 - name: Role Mapper
@@ -7773,6 +7774,138 @@ paths:
       required: true
       schema:
         type: string
+  /admin/realms/{realm}/organizations/{org-id}/invitations:
+    get:
+      tags:
+      - Organizations
+      summary: Get invitations for the organization
+      parameters:
+      - name: email
+        in: query
+        schema:
+          type: string
+      - name: first
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: firstName
+        in: query
+        schema:
+          type: string
+      - name: lastName
+        in: query
+        schema:
+          type: string
+      - name: max
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: search
+        in: query
+        schema:
+          type: string
+      - name: status
+        in: query
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganizationInvitationRepresentation'
+    parameters:
+    - name: realm
+      in: path
+      description: realm name (not id!)
+      required: true
+      schema:
+        type: string
+    - name: org-id
+      in: path
+      required: true
+      schema:
+        type: string
+  /admin/realms/{realm}/organizations/{org-id}/invitations/{id}:
+    get:
+      tags:
+      - Organizations
+      summary: Get invitation by ID
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationInvitationRepresentation'
+        "404":
+          description: Not Found
+    delete:
+      tags:
+      - Organizations
+      summary: Delete an invitation
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+    parameters:
+    - name: realm
+      in: path
+      description: realm name (not id!)
+      required: true
+      schema:
+        type: string
+    - name: org-id
+      in: path
+      required: true
+      schema:
+        type: string
+  /admin/realms/{realm}/organizations/{org-id}/invitations/{id}/resend:
+    post:
+      tags:
+      - Organizations
+      summary: Resend an invitation
+      parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+    parameters:
+    - name: realm
+      in: path
+      description: realm name (not id!)
+      required: true
+      schema:
+        type: string
+    - name: org-id
+      in: path
+      required: true
+      schema:
+        type: string
   /admin/realms/{realm}/organizations/{org-id}/members:
     get:
       tags:
@@ -10825,9 +10958,6 @@ components:
           type: string
         s_hash:
           type: string
-        address:
-          type: object
-          additionalProperties: {}
         trusted-certs:
           uniqueItems: true
           type: array
@@ -11673,12 +11803,6 @@ components:
       - UNANIMOUS
       - CONSENSUS
       type: string
-    EnforcementMode:
-      enum:
-      - PERMISSIVE
-      - ENFORCING
-      - DISABLED
-      type: string
     ErrorRepresentation:
       type: object
       properties:
@@ -11884,9 +12008,6 @@ components:
           type: string
         s_hash:
           type: string
-        address:
-          type: object
-          additionalProperties: {}
     IdentityProviderMapperRepresentation:
       type: object
       properties:
@@ -11962,35 +12083,6 @@ components:
         updateProfileFirstLogin:
           type: boolean
           deprecated: true
-    InstallationAdapterConfig:
-      type: object
-      properties:
-        realm:
-          type: string
-        realm-public-key:
-          type: string
-        auth-server-url:
-          type: string
-        ssl-required:
-          type: string
-        bearer-only:
-          type: boolean
-        resource:
-          type: string
-        public-client:
-          type: boolean
-        verify-token-audience:
-          type: boolean
-        credentials:
-          type: object
-          additionalProperties: {}
-        use-resource-role-mappings:
-          type: boolean
-        confidential-port:
-          format: int32
-          type: integer
-        policy-enforcer:
-          $ref: '#/components/schemas/PolicyEnforcerConfig'
     KeyMetadataRepresentation:
       type: object
       properties:
@@ -12180,17 +12272,6 @@ components:
       - UNMANAGED
       - MANAGED
       type: string
-    MethodConfig:
-      type: object
-      properties:
-        method:
-          type: string
-        scopes:
-          type: array
-          items:
-            type: string
-        scopes-enforcement-mode:
-          $ref: '#/components/schemas/ScopeEnforcementMode'
     MultivaluedHashMapStringComponentExportRepresentation:
       type: object
       additionalProperties:
@@ -12393,47 +12474,6 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/IdentityProviderRepresentation'
-    PathCacheConfig:
-      type: object
-      properties:
-        max-entries:
-          format: int32
-          type: integer
-        lifespan:
-          format: int64
-          type: integer
-    PathConfig:
-      type: object
-      properties:
-        name:
-          type: string
-        type:
-          type: string
-        path:
-          type: string
-        methods:
-          type: array
-          items:
-            $ref: '#/components/schemas/MethodConfig'
-        scopes:
-          type: array
-          items:
-            type: string
-        id:
-          type: string
-        enforcement-mode:
-          $ref: '#/components/schemas/EnforcementMode'
-        claim-information-point:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties: {}
-        invalidated:
-          type: boolean
-        staticPath:
-          type: boolean
-        static:
-          type: boolean
     Permission:
       type: object
       properties:
@@ -12459,39 +12499,6 @@ components:
       - PERMISSIVE
       - DISABLED
       type: string
-    PolicyEnforcerConfig:
-      type: object
-      properties:
-        enforcement-mode:
-          $ref: '#/components/schemas/EnforcementMode'
-        paths:
-          type: array
-          items:
-            $ref: '#/components/schemas/PathConfig'
-        path-cache:
-          $ref: '#/components/schemas/PathCacheConfig'
-        lazy-load-paths:
-          type: boolean
-        on-deny-redirect-to:
-          type: string
-        user-managed-access:
-          $ref: '#/components/schemas/UserManagedAccessConfig'
-        claim-information-point:
-          type: object
-          additionalProperties:
-            type: object
-            additionalProperties: {}
-        http-method-as-scope:
-          type: boolean
-        realm:
-          type: string
-        auth-server-url:
-          type: string
-        credentials:
-          type: object
-          additionalProperties: {}
-        resource:
-          type: string
     PolicyEvaluationRequest:
       type: object
       properties:
@@ -13303,12 +13310,6 @@ components:
             items:
               $ref: '#/components/schemas/RoleRepresentation'
           deprecated: true
-    ScopeEnforcementMode:
-      enum:
-      - ALL
-      - ANY
-      - DISABLED
-      type: string
     ScopeMappingRepresentation:
       type: object
       properties:
@@ -13511,8 +13512,6 @@ components:
         lastSync:
           format: int32
           type: integer
-    UserManagedAccessConfig:
-      type: object
     UserProfileAttributeGroupMetadata:
       type: object
       properties:
