@@ -419,6 +419,149 @@ public class OrganizationsClient
 
 
   /// <summary>
+  /// Get invitations for the organization
+  /// Operation: GET /admin/realms/{realm}/organizations/{org-id}/invitations
+  /// </summary>
+  public async Task<List<OrganizationInvitationRepresentation>> GetAdminRealmsOrganizationsInvitationsAsync(string realm, string orgId, GetOrganizationsRequest? request = null)
+  {
+    Dictionary<string, object> pathParams = new()
+    {
+      ["realm"] = realm,
+      ["org-id"] = orgId
+    };
+    string url = "realms/{realm}/organizations/{org-id}/invitations".BuildUrl(pathParams, request);
+
+    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+    HttpClientLog.RequestStarted(_logger, "GET", url);
+    HttpResponseMessage response = await _httpClient.GetAsync(url);
+    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+    HttpClientLog.RequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+    string responseContent;
+    try
+    {
+      response.EnsureSuccessStatusCode();
+      responseContent = await response.Content.ReadAsStringAsync();
+    }
+    catch (HttpRequestException ex)
+    {
+      responseContent = await response.Content.ReadAsStringAsync();
+      HttpClientLog.RequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      throw;
+    }
+
+    HttpClientLog.ResponseBody(_logger, url, responseContent);
+    List<OrganizationInvitationRepresentation>? result = JsonSerializer.Deserialize<List<OrganizationInvitationRepresentation>>(responseContent, JsonConfig.Default);
+    return result ?? new List<OrganizationInvitationRepresentation>();
+  }
+
+
+  /// <summary>
+  /// Get invitation by ID
+  /// Operation: GET /admin/realms/{realm}/organizations/{org-id}/invitations/{id}
+  /// </summary>
+  public async Task<OrganizationInvitationRepresentation> GetAdminRealmsOrganizationsInvitationsAsync(string id, string realm, string orgId)
+  {
+    Dictionary<string, object> pathParams = new()
+    {
+      ["id"] = id,
+      ["realm"] = realm,
+      ["org-id"] = orgId
+    };
+    string url = "realms/{realm}/organizations/{org-id}/invitations/{id}".BuildUrl(pathParams);
+
+    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+    HttpClientLog.RequestStarted(_logger, "GET", url);
+    HttpResponseMessage response = await _httpClient.GetAsync(url);
+    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+    HttpClientLog.RequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+    string responseContent;
+    try
+    {
+      response.EnsureSuccessStatusCode();
+      responseContent = await response.Content.ReadAsStringAsync();
+    }
+    catch (HttpRequestException ex)
+    {
+      responseContent = await response.Content.ReadAsStringAsync();
+      HttpClientLog.RequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      throw;
+    }
+
+    HttpClientLog.ResponseBody(_logger, url, responseContent);
+    OrganizationInvitationRepresentation? result = JsonSerializer.Deserialize<OrganizationInvitationRepresentation>(responseContent, JsonConfig.Default);
+    return result ?? new OrganizationInvitationRepresentation();
+  }
+
+
+  /// <summary>
+  /// Delete an invitation
+  /// Operation: DELETE /admin/realms/{realm}/organizations/{org-id}/invitations/{id}
+  /// </summary>
+  public async Task DeleteAdminRealmsOrganizationsInvitationsAsync(string id, string realm, string orgId)
+  {
+    Dictionary<string, object> pathParams = new()
+    {
+      ["id"] = id,
+      ["realm"] = realm,
+      ["org-id"] = orgId
+    };
+    string url = "realms/{realm}/organizations/{org-id}/invitations/{id}".BuildUrl(pathParams);
+
+    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+    HttpClientLog.RequestStarted(_logger, "DELETE", url);
+    HttpResponseMessage response = await _httpClient.DeleteAsync(url);
+    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+    HttpClientLog.RequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
+
+    try
+    {
+      response.EnsureSuccessStatusCode();
+    }
+    catch (HttpRequestException ex)
+    {
+      string responseContent = await response.Content.ReadAsStringAsync();
+      HttpClientLog.RequestFailed(_logger, (int)response.StatusCode, "DELETE", url, responseContent, ex);
+      throw;
+    }
+  }
+
+
+  /// <summary>
+  /// Resend an invitation
+  /// Operation: POST /admin/realms/{realm}/organizations/{org-id}/invitations/{id}/resend
+  /// </summary>
+  public async Task PostOrganizationsAsync(string id, string realm, string orgId)
+  {
+    Dictionary<string, object> pathParams = new()
+    {
+      ["id"] = id,
+      ["realm"] = realm,
+      ["org-id"] = orgId
+    };
+    string url = "realms/{realm}/organizations/{org-id}/invitations/{id}/resend".BuildUrl(pathParams);
+
+    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+    HttpClientLog.RequestStarted(_logger, "POST", url);
+    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
+    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+    HttpClientLog.RequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+    try
+    {
+      response.EnsureSuccessStatusCode();
+    }
+    catch (HttpRequestException ex)
+    {
+      string responseContent = await response.Content.ReadAsStringAsync();
+      HttpClientLog.RequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      throw;
+    }
+  }
+
+
+  /// <summary>
   /// Returns a paginated list of organization members filtered according to the specified parameters
   /// Operation: GET /admin/realms/{realm}/organizations/{org-id}/members
   /// </summary>

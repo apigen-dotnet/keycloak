@@ -78,6 +78,30 @@ public interface IOrganizationsClient
   Task DeleteAsync(string alias, string realm, string orgId);
 
   /// <summary>
+  /// Get invitations for the organization
+  /// Operation: GET /admin/realms/{realm}/organizations/{org-id}/invitations
+  /// </summary>
+  Task<List<OrganizationInvitationRepresentation>> GetAdminRealmsOrganizationsInvitationsAsync(string realm, string orgId, GetOrganizationsRequest? request = null);
+
+  /// <summary>
+  /// Get invitation by ID
+  /// Operation: GET /admin/realms/{realm}/organizations/{org-id}/invitations/{id}
+  /// </summary>
+  Task<OrganizationInvitationRepresentation> GetAdminRealmsOrganizationsInvitationsAsync(string id, string realm, string orgId);
+
+  /// <summary>
+  /// Delete an invitation
+  /// Operation: DELETE /admin/realms/{realm}/organizations/{org-id}/invitations/{id}
+  /// </summary>
+  Task DeleteAdminRealmsOrganizationsInvitationsAsync(string id, string realm, string orgId);
+
+  /// <summary>
+  /// Resend an invitation
+  /// Operation: POST /admin/realms/{realm}/organizations/{org-id}/invitations/{id}/resend
+  /// </summary>
+  Task PostOrganizationsAsync(string id, string realm, string orgId);
+
+  /// <summary>
   /// Returns a paginated list of organization members filtered according to the specified parameters
   /// Operation: GET /admin/realms/{realm}/organizations/{org-id}/members
   /// </summary>

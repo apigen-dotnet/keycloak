@@ -132,9 +132,6 @@ public class AccessToken
   [System.Text.Json.Serialization.JsonPropertyName("s_hash")]
   public string? SHash { get; set; }
 
-  [System.Text.Json.Serialization.JsonPropertyName("address")]
-  public Dictionary<string, object?>? Address { get; set; }
-
   [System.Text.Json.Serialization.JsonPropertyName("trusted-certs")]
   public List<string?>? TrustedCerts { get; set; }
 
