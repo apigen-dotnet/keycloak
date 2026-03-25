@@ -1,0 +1,30 @@
+# Apigen.Keycloak.Admin
+
+Generated C# client for the [Keycloak](https://www.keycloak.org/) Admin REST API.
+
+## Installation
+
+```bash
+dotnet add package Apigen.Keycloak.Admin.Client
+```
+
+The `Apigen.Keycloak.Admin.Models` package is included as a dependency.
+
+## Usage
+
+```csharp
+using Apigen.Keycloak.Admin.Client;
+using Apigen.Keycloak.Admin.Models;
+
+// Create client with API key
+var client = KeycloakAdminClient.WithApiKey(
+    "your-api-key",
+    "https://your-keycloak-instance/admin/realms");
+
+// Or use a pre-configured HttpClient
+var client = new KeycloakAdminClient(httpClient);
+```
+
+## License
+
+MIT
