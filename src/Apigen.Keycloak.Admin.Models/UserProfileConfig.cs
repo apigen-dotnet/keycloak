@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UPConfig from OpenAPI schema.
 /// Schema path: #/components/schemas/UPConfig
 /// </summary>
-public class UPConfig
+public class UserProfileConfig
 {
   [System.Text.Json.Serialization.JsonPropertyName("attributes")]
   public List<UPAttribute>? Attributes { get; set; }

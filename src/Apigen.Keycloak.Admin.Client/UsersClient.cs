@@ -137,7 +137,7 @@ public class UsersClient
   /// 
   /// Operation: GET /admin/realms/{realm}/users/profile
   /// </summary>
-  public async Task<UPConfig> GetUsersAsync(string realm)
+  public async Task<UserProfileConfig> GetUsersAsync(string realm)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -165,8 +165,8 @@ public class UsersClient
     }
 
     HttpClientLog.ResponseBody(_logger, url, responseContent);
-    UPConfig? result = JsonSerializer.Deserialize<UPConfig>(responseContent, JsonConfig.Default);
-    return result ?? new UPConfig();
+    UserProfileConfig? result = JsonSerializer.Deserialize<UserProfileConfig>(responseContent, JsonConfig.Default);
+    return result ?? new UserProfileConfig();
   }
 
 
@@ -174,7 +174,7 @@ public class UsersClient
   /// 
   /// Operation: PUT /admin/realms/{realm}/users/profile
   /// </summary>
-  public async Task<UPConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UPConfig upConfig)
+  public async Task<UserProfileConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UserProfileConfig userProfileConfig)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -184,7 +184,7 @@ public class UsersClient
 
     long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
     HttpClientLog.RequestStarted(_logger, "PUT", url);
-    string json = JsonSerializer.Serialize(upConfig, JsonConfig.Default);
+    string json = JsonSerializer.Serialize(userProfileConfig, JsonConfig.Default);
     HttpClientLog.RequestBody(_logger, "PUT", json);
     StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
     HttpResponseMessage response = await _httpClient.PutAsync(url, content);
@@ -205,8 +205,8 @@ public class UsersClient
     }
 
     HttpClientLog.ResponseBody(_logger, url, responseContent);
-    UPConfig? result = JsonSerializer.Deserialize<UPConfig>(responseContent, JsonConfig.Default);
-    return result ?? new UPConfig();
+    UserProfileConfig? result = JsonSerializer.Deserialize<UserProfileConfig>(responseContent, JsonConfig.Default);
+    return result ?? new UserProfileConfig();
   }
 
 

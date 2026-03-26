@@ -33,13 +33,13 @@ public interface IUsersClient
   /// 
   /// Operation: GET /admin/realms/{realm}/users/profile
   /// </summary>
-  Task<UPConfig> GetUsersAsync(string realm);
+  Task<UserProfileConfig> GetUsersAsync(string realm);
 
   /// <summary>
   /// 
   /// Operation: PUT /admin/realms/{realm}/users/profile
   /// </summary>
-  Task<UPConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UPConfig upConfig);
+  Task<UserProfileConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UserProfileConfig userProfileConfig);
 
   /// <summary>
   /// 

@@ -63,6 +63,12 @@ required_headers = []
 # TODO: Need to add property_name_override feature to handle "x5t#S256"
 # which contains # character (invalid in C# property names)
 
+# Type name overrides
+[[type_name_overrides]]
+original_name = "UPConfig"
+new_name = "UserProfileConfig"
+reason = "UPConfig is cryptic, expand to UserProfileConfig"
+
 # Code formatting preferences
 [formatting]
 use_spaces = true
