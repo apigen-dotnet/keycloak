@@ -7,7 +7,7 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum DecisionEffect
 {
     [JsonStringEnumMemberName("PERMIT")]
-    PERMIT,
+    Permit,
     [JsonStringEnumMemberName("DENY")]
-    DENY,
+    Deny,
 }

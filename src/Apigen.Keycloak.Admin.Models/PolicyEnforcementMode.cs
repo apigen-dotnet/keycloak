@@ -7,9 +7,9 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum PolicyEnforcementMode
 {
     [JsonStringEnumMemberName("ENFORCING")]
-    ENFORCING,
+    Enforcing,
     [JsonStringEnumMemberName("PERMISSIVE")]
-    PERMISSIVE,
+    Permissive,
     [JsonStringEnumMemberName("DISABLED")]
-    DISABLED,
+    Disabled,
 }

@@ -7,9 +7,9 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum UnmanagedAttributePolicy
 {
     [JsonStringEnumMemberName("ENABLED")]
-    ENABLED,
+    Enabled,
     [JsonStringEnumMemberName("ADMIN_VIEW")]
-    ADMINVIEW,
+    AdminView,
     [JsonStringEnumMemberName("ADMIN_EDIT")]
-    ADMINEDIT,
+    AdminEdit,
 }

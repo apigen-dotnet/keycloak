@@ -7,7 +7,7 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum MembershipType
 {
     [JsonStringEnumMemberName("UNMANAGED")]
-    UNMANAGED,
+    Unmanaged,
     [JsonStringEnumMemberName("MANAGED")]
-    MANAGED,
+    Managed,
 }

@@ -7,7 +7,7 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum BruteForceStrategy
 {
     [JsonStringEnumMemberName("LINEAR")]
-    LINEAR,
+    Linear,
     [JsonStringEnumMemberName("MULTIPLE")]
-    MULTIPLE,
+    Multiple,
 }

@@ -7,7 +7,7 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum Status
 {
     [JsonStringEnumMemberName("PENDING")]
-    PENDING,
+    Pending,
     [JsonStringEnumMemberName("EXPIRED")]
-    EXPIRED,
+    Expired,
 }

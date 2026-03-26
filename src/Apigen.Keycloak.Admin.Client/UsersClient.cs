@@ -174,7 +174,7 @@ public class UsersClient
   /// 
   /// Operation: PUT /admin/realms/{realm}/users/profile
   /// </summary>
-  public async Task<UPConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UPConfig uPConfig)
+  public async Task<UPConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UPConfig upConfig)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -184,7 +184,7 @@ public class UsersClient
 
     long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
     HttpClientLog.RequestStarted(_logger, "PUT", url);
-    string json = JsonSerializer.Serialize(uPConfig, JsonConfig.Default);
+    string json = JsonSerializer.Serialize(upConfig, JsonConfig.Default);
     HttpClientLog.RequestBody(_logger, "PUT", json);
     StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
     HttpResponseMessage response = await _httpClient.PutAsync(url, content);

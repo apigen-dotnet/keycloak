@@ -7,9 +7,9 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum DecisionStrategy
 {
     [JsonStringEnumMemberName("AFFIRMATIVE")]
-    AFFIRMATIVE,
+    Affirmative,
     [JsonStringEnumMemberName("UNANIMOUS")]
-    UNANIMOUS,
+    Unanimous,
     [JsonStringEnumMemberName("CONSENSUS")]
-    CONSENSUS,
+    Consensus,
 }

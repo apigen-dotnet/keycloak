@@ -39,7 +39,7 @@ public interface IUsersClient
   /// 
   /// Operation: PUT /admin/realms/{realm}/users/profile
   /// </summary>
-  Task<UPConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UPConfig uPConfig);
+  Task<UPConfig> PutUsersAsync(string realm, Apigen.Keycloak.Admin.Models.UPConfig upConfig);
 
   /// <summary>
   /// 

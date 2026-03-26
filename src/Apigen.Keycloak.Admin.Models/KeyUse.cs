@@ -7,9 +7,9 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum KeyUse
 {
     [JsonStringEnumMemberName("SIG")]
-    SIG,
+    Sig,
     [JsonStringEnumMemberName("ENC")]
-    ENC,
+    Enc,
     [JsonStringEnumMemberName("JWT_SVID")]
-    JWTSVID,
+    JwtSvid,
 }

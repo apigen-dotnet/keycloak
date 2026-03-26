@@ -7,7 +7,7 @@ namespace Apigen.Keycloak.Admin.Models;
 public enum Logic
 {
     [JsonStringEnumMemberName("POSITIVE")]
-    POSITIVE,
+    Positive,
     [JsonStringEnumMemberName("NEGATIVE")]
-    NEGATIVE,
+    Negative,
 }
