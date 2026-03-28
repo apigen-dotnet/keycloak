@@ -13,17 +13,24 @@ The `Apigen.Keycloak.Admin.Models` package is included as a dependency.
 ## Usage
 
 ```csharp
+using System.Net.Http.Headers;
 using Apigen.Keycloak.Admin.Client;
 using Apigen.Keycloak.Admin.Models;
 
-// Create client with API key
-var client = KeycloakAdminClient.WithApiKey(
-    "your-api-key",
-    "https://your-keycloak-instance/admin/realms");
+// Configure an HttpClient with Bearer token authentication
+var httpClient = new HttpClient
+{
+    BaseAddress = new Uri("https://your-keycloak-instance/admin/realms")
+};
+httpClient.DefaultRequestHeaders.Authorization =
+    new AuthenticationHeaderValue("Bearer", "your-access-token");
 
-// Or use a pre-configured HttpClient
 var client = new KeycloakAdminClient(httpClient);
 ```
+
+> **Tip:** Keycloak uses OAuth2 for authentication. Use a library like
+> [IdentityModel](https://www.nuget.org/packages/IdentityModel) to obtain
+> an access token via client credentials, then pass it as a Bearer token.
 
 ## License
 
