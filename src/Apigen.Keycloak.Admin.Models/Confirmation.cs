@@ -28,7 +28,7 @@ namespace Apigen.Keycloak.Admin.Models;
 public class Confirmation
 {
   [System.Text.Json.Serialization.JsonPropertyName("x5t#S256")]
-  public string? X5tHashS256 { get; set; }
+  public string? X5THashS256 { get; set; }
 
   [System.Text.Json.Serialization.JsonPropertyName("jkt")]
   public string? Jkt { get; set; }
