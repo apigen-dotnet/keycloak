@@ -1,7 +1,6 @@
 # ApiGenerator Configuration File
 # Keycloak Admin REST API Client
 
-input_path = "specs/keycloak.yaml"
 output_path = "src"
 target_framework = "net10.0"
 generate_nullable_reference_types = true
@@ -12,6 +11,10 @@ global_usings = [
     "System.Text.Json.Serialization",
     "System.Runtime.Serialization"
 ]
+
+[[specs]]
+path = "specs/keycloak.yaml"
+path_prefix = ""
 
 # Models Generation Settings
 [models]
