@@ -186,15 +186,6 @@ public class KeycloakAdminClient
     Workflows = new WorkflowsClient(_httpClient, _logger);
   }
 
-  /// <summary>
-  /// Create client with API key authentication
-  /// </summary>
-  public static KeycloakAdminClient WithApiKey(string apiKey, string baseUrl = "https://localhost", ILogger? logger = null)
-  {
-    HttpClient httpClient = CreateTokenAuthHttpClient(apiKey, baseUrl, "", false);
-    return new KeycloakAdminClient(httpClient, true, logger);
-  }
-
   private static HttpClient CreateTokenAuthHttpClient(string apiToken, string baseUrl, string headerName, bool useBearer)
   {
     // Ensure baseUrl ends with / for proper Uri combining with relative paths
