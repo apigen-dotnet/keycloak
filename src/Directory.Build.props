@@ -14,7 +14,7 @@
 
   <PropertyGroup Condition="'$(MSBuildProjectName)' == 'Apigen.Keycloak.Admin.Client'">
     <PackageId>Apigen.Keycloak.Admin.Client</PackageId>
-    <Version>26.5.3</Version>
+    <Version>26.5.4</Version>
     <Description>Generated C# client for the Keycloak Admin REST API</Description>
     <PackageTags>keycloak;api;client;openapi;apigen;admin</PackageTags>
     <PackageReadmeFile>NUGET.md</PackageReadmeFile>
