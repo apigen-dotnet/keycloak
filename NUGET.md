@@ -32,6 +32,10 @@ var client = new KeycloakAdminClient(httpClient);
 > [IdentityModel](https://www.nuget.org/packages/IdentityModel) to obtain
 > an access token via client credentials, then pass it as a Bearer token.
 
+## Versioning
+
+Package versions follow the upstream application version: the **major.minor** matches the application API version, and the **patch** is our client revision. For example, package `2.6.7` was built against API version `2.6.x` and is our 7th client release for that API version.
+
 ## License
 
 MIT
