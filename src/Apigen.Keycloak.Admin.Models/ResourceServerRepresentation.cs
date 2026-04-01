@@ -22,38 +22,38 @@ using System.Text.Json.Serialization;
 namespace Apigen.Keycloak.Admin.Models;
 
 /// <summary>
-/// Response model for ResourceServerRepresentation
+/// ResourceServerRepresentation from OpenAPI schema.
+/// Schema path: #/components/schemas/ResourceServerRepresentation
 /// </summary>
 public class ResourceServerRepresentation
 {
-  [JsonPropertyName("id")]
+  [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }
 
-  [JsonPropertyName("clientId")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientId")]
   public string? ClientId { get; set; }
 
-  [JsonPropertyName("name")]
+  [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }
 
-  [JsonPropertyName("allowRemoteResourceManagement")]
+  [System.Text.Json.Serialization.JsonPropertyName("allowRemoteResourceManagement")]
   public bool? AllowRemoteResourceManagement { get; set; }
 
-  [JsonPropertyName("policyEnforcementMode")]
+  [System.Text.Json.Serialization.JsonPropertyName("policyEnforcementMode")]
   public PolicyEnforcementMode? PolicyEnforcementMode { get; set; }
 
-  [JsonPropertyName("resources")]
+  [System.Text.Json.Serialization.JsonPropertyName("resources")]
   public List<ResourceRepresentation>? Resources { get; set; }
 
-  [JsonPropertyName("policies")]
+  [System.Text.Json.Serialization.JsonPropertyName("policies")]
   public List<PolicyRepresentation>? Policies { get; set; }
 
-  [JsonPropertyName("scopes")]
+  [System.Text.Json.Serialization.JsonPropertyName("scopes")]
   public List<ScopeRepresentation>? Scopes { get; set; }
 
-  [JsonPropertyName("decisionStrategy")]
+  [System.Text.Json.Serialization.JsonPropertyName("decisionStrategy")]
   public DecisionStrategy? DecisionStrategy { get; set; }
 
-  [JsonPropertyName("authorizationSchema")]
+  [System.Text.Json.Serialization.JsonPropertyName("authorizationSchema")]
   public AuthorizationSchema? AuthorizationSchema { get; set; }
-
 }

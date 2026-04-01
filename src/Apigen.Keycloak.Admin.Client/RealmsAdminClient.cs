@@ -126,7 +126,7 @@ public class RealmsAdminClient
   /// Update the top-level information of the realm Any user, roles or client information in the representation will be ignored.
   /// Operation: PUT /admin/realms/{realm}
   /// </summary>
-  public async Task UpdateAsync(string realm, Apigen.Keycloak.Admin.Models.RealmRepresentationRequest realmRepresentation)
+  public async Task UpdateAsync(string realm, Apigen.Keycloak.Admin.Models.RealmRepresentation realmRepresentation)
   {
     Dictionary<string, object> pathParams = new()
     {

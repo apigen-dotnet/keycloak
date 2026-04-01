@@ -66,7 +66,7 @@ public class ClientsClient
   /// Create a new client Client’s client_id must be unique!
   /// Operation: POST /admin/realms/{realm}/clients
   /// </summary>
-  public async Task PostClientsAsync(string realm, Apigen.Keycloak.Admin.Models.ClientRepresentationRequest clientRepresentation)
+  public async Task PostClientsAsync(string realm, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -138,7 +138,7 @@ public class ClientsClient
   /// Update the client
   /// Operation: PUT /admin/realms/{realm}/clients/{client-uuid}
   /// </summary>
-  public async Task UpdateAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ClientRepresentationRequest clientRepresentation)
+  public async Task UpdateAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation)
   {
     Dictionary<string, object> pathParams = new()
     {

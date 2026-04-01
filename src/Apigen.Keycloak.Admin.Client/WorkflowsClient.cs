@@ -66,7 +66,7 @@ public class WorkflowsClient
   /// Create workflow
   /// Operation: POST /admin/realms/{realm}/workflows
   /// </summary>
-  public async Task PostWorkflowsAsync(string realm, Apigen.Keycloak.Admin.Models.WorkflowRepresentationRequest workflowRepresentation)
+  public async Task PostWorkflowsAsync(string realm, Apigen.Keycloak.Admin.Models.WorkflowRepresentation workflowRepresentation)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -176,7 +176,7 @@ public class WorkflowsClient
   /// Update workflow
   /// Operation: PUT /admin/realms/{realm}/workflows/{id}
   /// </summary>
-  public async Task UpdateAsync(string realm, string id, Apigen.Keycloak.Admin.Models.WorkflowRepresentationRequest workflowRepresentation)
+  public async Task UpdateAsync(string realm, string id, Apigen.Keycloak.Admin.Models.WorkflowRepresentation workflowRepresentation)
   {
     Dictionary<string, object> pathParams = new()
     {

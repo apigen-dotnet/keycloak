@@ -22,140 +22,140 @@ using System.Text.Json.Serialization;
 namespace Apigen.Keycloak.Admin.Models;
 
 /// <summary>
-/// Response model for ClientRepresentation
+/// ClientRepresentation from OpenAPI schema.
+/// Schema path: #/components/schemas/ClientRepresentation
 /// </summary>
 public class ClientRepresentation
 {
-  [JsonPropertyName("id")]
+  [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }
 
-  [JsonPropertyName("clientId")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientId")]
   public string? ClientId { get; set; }
 
-  [JsonPropertyName("name")]
+  [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }
 
-  [JsonPropertyName("description")]
+  [System.Text.Json.Serialization.JsonPropertyName("description")]
   public string? Description { get; set; }
 
-  [JsonPropertyName("type")]
+  [System.Text.Json.Serialization.JsonPropertyName("type")]
   public string? Type { get; set; }
 
-  [JsonPropertyName("rootUrl")]
+  [System.Text.Json.Serialization.JsonPropertyName("rootUrl")]
   public string? RootUrl { get; set; }
 
-  [JsonPropertyName("adminUrl")]
+  [System.Text.Json.Serialization.JsonPropertyName("adminUrl")]
   public string? AdminUrl { get; set; }
 
-  [JsonPropertyName("baseUrl")]
+  [System.Text.Json.Serialization.JsonPropertyName("baseUrl")]
   public string? BaseUrl { get; set; }
 
-  [JsonPropertyName("surrogateAuthRequired")]
+  [System.Text.Json.Serialization.JsonPropertyName("surrogateAuthRequired")]
   public bool? SurrogateAuthRequired { get; set; }
 
-  [JsonPropertyName("enabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("enabled")]
   public bool? Enabled { get; set; }
 
-  [JsonPropertyName("alwaysDisplayInConsole")]
+  [System.Text.Json.Serialization.JsonPropertyName("alwaysDisplayInConsole")]
   public bool? AlwaysDisplayInConsole { get; set; }
 
-  [JsonPropertyName("clientAuthenticatorType")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientAuthenticatorType")]
   public string? ClientAuthenticatorType { get; set; }
 
-  [JsonPropertyName("secret")]
+  [System.Text.Json.Serialization.JsonPropertyName("secret")]
   public string? Secret { get; set; }
 
-  [JsonPropertyName("registrationAccessToken")]
+  [System.Text.Json.Serialization.JsonPropertyName("registrationAccessToken")]
   public string? RegistrationAccessToken { get; set; }
 
-  [JsonPropertyName("defaultRoles")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultRoles")]
   public List<string?>? DefaultRoles { get; set; }
 
-  [JsonPropertyName("redirectUris")]
+  [System.Text.Json.Serialization.JsonPropertyName("redirectUris")]
   public List<string?>? RedirectUris { get; set; }
 
-  [JsonPropertyName("webOrigins")]
+  [System.Text.Json.Serialization.JsonPropertyName("webOrigins")]
   public List<string?>? WebOrigins { get; set; }
 
-  [JsonPropertyName("notBefore")]
+  [System.Text.Json.Serialization.JsonPropertyName("notBefore")]
   public int? NotBefore { get; set; }
 
-  [JsonPropertyName("bearerOnly")]
+  [System.Text.Json.Serialization.JsonPropertyName("bearerOnly")]
   public bool? BearerOnly { get; set; }
 
-  [JsonPropertyName("consentRequired")]
+  [System.Text.Json.Serialization.JsonPropertyName("consentRequired")]
   public bool? ConsentRequired { get; set; }
 
-  [JsonPropertyName("standardFlowEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("standardFlowEnabled")]
   public bool? StandardFlowEnabled { get; set; }
 
-  [JsonPropertyName("implicitFlowEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("implicitFlowEnabled")]
   public bool? ImplicitFlowEnabled { get; set; }
 
-  [JsonPropertyName("directAccessGrantsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("directAccessGrantsEnabled")]
   public bool? DirectAccessGrantsEnabled { get; set; }
 
-  [JsonPropertyName("serviceAccountsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("serviceAccountsEnabled")]
   public bool? ServiceAccountsEnabled { get; set; }
 
-  [JsonPropertyName("authorizationServicesEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("authorizationServicesEnabled")]
   public bool? AuthorizationServicesEnabled { get; set; }
 
-  [JsonPropertyName("directGrantsOnly")]
+  [System.Text.Json.Serialization.JsonPropertyName("directGrantsOnly")]
   public bool? DirectGrantsOnly { get; set; }
 
-  [JsonPropertyName("publicClient")]
+  [System.Text.Json.Serialization.JsonPropertyName("publicClient")]
   public bool? PublicClient { get; set; }
 
-  [JsonPropertyName("frontchannelLogout")]
+  [System.Text.Json.Serialization.JsonPropertyName("frontchannelLogout")]
   public bool? FrontchannelLogout { get; set; }
 
-  [JsonPropertyName("protocol")]
+  [System.Text.Json.Serialization.JsonPropertyName("protocol")]
   public string? Protocol { get; set; }
 
-  [JsonPropertyName("attributes")]
+  [System.Text.Json.Serialization.JsonPropertyName("attributes")]
   public Dictionary<string, string?>? Attributes { get; set; }
 
-  [JsonPropertyName("authenticationFlowBindingOverrides")]
+  [System.Text.Json.Serialization.JsonPropertyName("authenticationFlowBindingOverrides")]
   public Dictionary<string, string?>? AuthenticationFlowBindingOverrides { get; set; }
 
-  [JsonPropertyName("fullScopeAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("fullScopeAllowed")]
   public bool? FullScopeAllowed { get; set; }
 
-  [JsonPropertyName("nodeReRegistrationTimeout")]
+  [System.Text.Json.Serialization.JsonPropertyName("nodeReRegistrationTimeout")]
   public int? NodeReRegistrationTimeout { get; set; }
 
-  [JsonPropertyName("registeredNodes")]
+  [System.Text.Json.Serialization.JsonPropertyName("registeredNodes")]
   public Dictionary<string, int>? RegisteredNodes { get; set; }
 
-  [JsonPropertyName("protocolMappers")]
+  [System.Text.Json.Serialization.JsonPropertyName("protocolMappers")]
   public List<ProtocolMapperRepresentation>? ProtocolMappers { get; set; }
 
-  [JsonPropertyName("clientTemplate")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientTemplate")]
   public string? ClientTemplate { get; set; }
 
-  [JsonPropertyName("useTemplateConfig")]
+  [System.Text.Json.Serialization.JsonPropertyName("useTemplateConfig")]
   public bool? UseTemplateConfig { get; set; }
 
-  [JsonPropertyName("useTemplateScope")]
+  [System.Text.Json.Serialization.JsonPropertyName("useTemplateScope")]
   public bool? UseTemplateScope { get; set; }
 
-  [JsonPropertyName("useTemplateMappers")]
+  [System.Text.Json.Serialization.JsonPropertyName("useTemplateMappers")]
   public bool? UseTemplateMappers { get; set; }
 
-  [JsonPropertyName("defaultClientScopes")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultClientScopes")]
   public List<string?>? DefaultClientScopes { get; set; }
 
-  [JsonPropertyName("optionalClientScopes")]
+  [System.Text.Json.Serialization.JsonPropertyName("optionalClientScopes")]
   public List<string?>? OptionalClientScopes { get; set; }
 
-  [JsonPropertyName("authorizationSettings")]
+  [System.Text.Json.Serialization.JsonPropertyName("authorizationSettings")]
   public ResourceServerRepresentation? AuthorizationSettings { get; set; }
 
-  [JsonPropertyName("access")]
+  [System.Text.Json.Serialization.JsonPropertyName("access")]
   public Dictionary<string, bool>? Access { get; set; }
 
-  [JsonPropertyName("origin")]
+  [System.Text.Json.Serialization.JsonPropertyName("origin")]
   public string? Origin { get; set; }
-
 }

@@ -22,44 +22,44 @@ using System.Text.Json.Serialization;
 namespace Apigen.Keycloak.Admin.Models;
 
 /// <summary>
-/// Response model for WorkflowRepresentation
+/// WorkflowRepresentation from OpenAPI schema.
+/// Schema path: #/components/schemas/WorkflowRepresentation
 /// </summary>
 public class WorkflowRepresentation
 {
-  [JsonPropertyName("id")]
+  [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }
 
-  [JsonPropertyName("name")]
+  [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }
 
-  [JsonPropertyName("enabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("enabled")]
   public bool? Enabled { get; set; }
 
-  [JsonPropertyName("on")]
+  [System.Text.Json.Serialization.JsonPropertyName("on")]
   public string? On { get; set; }
 
-  [JsonPropertyName("schedule")]
+  [System.Text.Json.Serialization.JsonPropertyName("schedule")]
   public WorkflowScheduleRepresentation? Schedule { get; set; }
 
-  [JsonPropertyName("concurrency")]
+  [System.Text.Json.Serialization.JsonPropertyName("concurrency")]
   public WorkflowConcurrencyRepresentation? Concurrency { get; set; }
 
-  [JsonPropertyName("if")]
+  [System.Text.Json.Serialization.JsonPropertyName("if")]
   public string? If { get; set; }
 
-  [JsonPropertyName("steps")]
+  [System.Text.Json.Serialization.JsonPropertyName("steps")]
   public List<WorkflowStepRepresentation>? Steps { get; set; }
 
-  [JsonPropertyName("state")]
+  [System.Text.Json.Serialization.JsonPropertyName("state")]
   public WorkflowStateRepresentation? State { get; set; }
 
-  [JsonPropertyName("with")]
+  [System.Text.Json.Serialization.JsonPropertyName("with")]
   public MultivaluedHashMapStringString? With { get; set; }
 
-  [JsonPropertyName("cancelInProgress")]
+  [System.Text.Json.Serialization.JsonPropertyName("cancelInProgress")]
   public string? CancelInProgress { get; set; }
 
-  [JsonPropertyName("restartInProgress")]
+  [System.Text.Json.Serialization.JsonPropertyName("restartInProgress")]
   public string? RestartInProgress { get; set; }
-
 }

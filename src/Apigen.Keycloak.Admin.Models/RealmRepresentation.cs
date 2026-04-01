@@ -22,458 +22,458 @@ using System.Text.Json.Serialization;
 namespace Apigen.Keycloak.Admin.Models;
 
 /// <summary>
-/// Response model for RealmRepresentation
+/// RealmRepresentation from OpenAPI schema.
+/// Schema path: #/components/schemas/RealmRepresentation
 /// </summary>
 public class RealmRepresentation
 {
-  [JsonPropertyName("id")]
+  [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }
 
-  [JsonPropertyName("realm")]
+  [System.Text.Json.Serialization.JsonPropertyName("realm")]
   public string? Realm { get; set; }
 
-  [JsonPropertyName("displayName")]
+  [System.Text.Json.Serialization.JsonPropertyName("displayName")]
   public string? DisplayName { get; set; }
 
-  [JsonPropertyName("displayNameHtml")]
+  [System.Text.Json.Serialization.JsonPropertyName("displayNameHtml")]
   public string? DisplayNameHtml { get; set; }
 
-  [JsonPropertyName("notBefore")]
+  [System.Text.Json.Serialization.JsonPropertyName("notBefore")]
   public int? NotBefore { get; set; }
 
-  [JsonPropertyName("defaultSignatureAlgorithm")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultSignatureAlgorithm")]
   public string? DefaultSignatureAlgorithm { get; set; }
 
-  [JsonPropertyName("revokeRefreshToken")]
+  [System.Text.Json.Serialization.JsonPropertyName("revokeRefreshToken")]
   public bool? RevokeRefreshToken { get; set; }
 
-  [JsonPropertyName("refreshTokenMaxReuse")]
+  [System.Text.Json.Serialization.JsonPropertyName("refreshTokenMaxReuse")]
   public int? RefreshTokenMaxReuse { get; set; }
 
-  [JsonPropertyName("accessTokenLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("accessTokenLifespan")]
   public int? AccessTokenLifespan { get; set; }
 
-  [JsonPropertyName("accessTokenLifespanForImplicitFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("accessTokenLifespanForImplicitFlow")]
   public int? AccessTokenLifespanForImplicitFlow { get; set; }
 
-  [JsonPropertyName("ssoSessionIdleTimeout")]
+  [System.Text.Json.Serialization.JsonPropertyName("ssoSessionIdleTimeout")]
   public int? SsoSessionIdleTimeout { get; set; }
 
-  [JsonPropertyName("ssoSessionMaxLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("ssoSessionMaxLifespan")]
   public int? SsoSessionMaxLifespan { get; set; }
 
-  [JsonPropertyName("ssoSessionIdleTimeoutRememberMe")]
+  [System.Text.Json.Serialization.JsonPropertyName("ssoSessionIdleTimeoutRememberMe")]
   public int? SsoSessionIdleTimeoutRememberMe { get; set; }
 
-  [JsonPropertyName("ssoSessionMaxLifespanRememberMe")]
+  [System.Text.Json.Serialization.JsonPropertyName("ssoSessionMaxLifespanRememberMe")]
   public int? SsoSessionMaxLifespanRememberMe { get; set; }
 
-  [JsonPropertyName("offlineSessionIdleTimeout")]
+  [System.Text.Json.Serialization.JsonPropertyName("offlineSessionIdleTimeout")]
   public int? OfflineSessionIdleTimeout { get; set; }
 
-  [JsonPropertyName("offlineSessionMaxLifespanEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("offlineSessionMaxLifespanEnabled")]
   public bool? OfflineSessionMaxLifespanEnabled { get; set; }
 
-  [JsonPropertyName("offlineSessionMaxLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("offlineSessionMaxLifespan")]
   public int? OfflineSessionMaxLifespan { get; set; }
 
-  [JsonPropertyName("clientSessionIdleTimeout")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientSessionIdleTimeout")]
   public int? ClientSessionIdleTimeout { get; set; }
 
-  [JsonPropertyName("clientSessionMaxLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientSessionMaxLifespan")]
   public int? ClientSessionMaxLifespan { get; set; }
 
-  [JsonPropertyName("clientOfflineSessionIdleTimeout")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientOfflineSessionIdleTimeout")]
   public int? ClientOfflineSessionIdleTimeout { get; set; }
 
-  [JsonPropertyName("clientOfflineSessionMaxLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientOfflineSessionMaxLifespan")]
   public int? ClientOfflineSessionMaxLifespan { get; set; }
 
-  [JsonPropertyName("accessCodeLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("accessCodeLifespan")]
   public int? AccessCodeLifespan { get; set; }
 
-  [JsonPropertyName("accessCodeLifespanUserAction")]
+  [System.Text.Json.Serialization.JsonPropertyName("accessCodeLifespanUserAction")]
   public int? AccessCodeLifespanUserAction { get; set; }
 
-  [JsonPropertyName("accessCodeLifespanLogin")]
+  [System.Text.Json.Serialization.JsonPropertyName("accessCodeLifespanLogin")]
   public int? AccessCodeLifespanLogin { get; set; }
 
-  [JsonPropertyName("actionTokenGeneratedByAdminLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("actionTokenGeneratedByAdminLifespan")]
   public int? ActionTokenGeneratedByAdminLifespan { get; set; }
 
-  [JsonPropertyName("actionTokenGeneratedByUserLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("actionTokenGeneratedByUserLifespan")]
   public int? ActionTokenGeneratedByUserLifespan { get; set; }
 
-  [JsonPropertyName("oauth2DeviceCodeLifespan")]
+  [System.Text.Json.Serialization.JsonPropertyName("oauth2DeviceCodeLifespan")]
   public int? Oauth2DeviceCodeLifespan { get; set; }
 
-  [JsonPropertyName("oauth2DevicePollingInterval")]
+  [System.Text.Json.Serialization.JsonPropertyName("oauth2DevicePollingInterval")]
   public int? Oauth2DevicePollingInterval { get; set; }
 
-  [JsonPropertyName("enabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("enabled")]
   public bool? Enabled { get; set; }
 
-  [JsonPropertyName("sslRequired")]
+  [System.Text.Json.Serialization.JsonPropertyName("sslRequired")]
   public string? SslRequired { get; set; }
 
-  [JsonPropertyName("passwordCredentialGrantAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("passwordCredentialGrantAllowed")]
   public bool? PasswordCredentialGrantAllowed { get; set; }
 
-  [JsonPropertyName("registrationAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("registrationAllowed")]
   public bool? RegistrationAllowed { get; set; }
 
-  [JsonPropertyName("registrationEmailAsUsername")]
+  [System.Text.Json.Serialization.JsonPropertyName("registrationEmailAsUsername")]
   public bool? RegistrationEmailAsUsername { get; set; }
 
-  [JsonPropertyName("rememberMe")]
+  [System.Text.Json.Serialization.JsonPropertyName("rememberMe")]
   public bool? RememberMe { get; set; }
 
-  [JsonPropertyName("verifyEmail")]
+  [System.Text.Json.Serialization.JsonPropertyName("verifyEmail")]
   public bool? VerifyEmail { get; set; }
 
-  [JsonPropertyName("loginWithEmailAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("loginWithEmailAllowed")]
   public bool? LoginWithEmailAllowed { get; set; }
 
-  [JsonPropertyName("duplicateEmailsAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("duplicateEmailsAllowed")]
   public bool? DuplicateEmailsAllowed { get; set; }
 
-  [JsonPropertyName("resetPasswordAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("resetPasswordAllowed")]
   public bool? ResetPasswordAllowed { get; set; }
 
-  [JsonPropertyName("editUsernameAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("editUsernameAllowed")]
   public bool? EditUsernameAllowed { get; set; }
 
-  [JsonPropertyName("userCacheEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("userCacheEnabled")]
   public bool? UserCacheEnabled { get; set; }
 
-  [JsonPropertyName("realmCacheEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("realmCacheEnabled")]
   public bool? RealmCacheEnabled { get; set; }
 
-  [JsonPropertyName("bruteForceProtected")]
+  [System.Text.Json.Serialization.JsonPropertyName("bruteForceProtected")]
   public bool? BruteForceProtected { get; set; }
 
-  [JsonPropertyName("permanentLockout")]
+  [System.Text.Json.Serialization.JsonPropertyName("permanentLockout")]
   public bool? PermanentLockout { get; set; }
 
-  [JsonPropertyName("maxTemporaryLockouts")]
+  [System.Text.Json.Serialization.JsonPropertyName("maxTemporaryLockouts")]
   public int? MaxTemporaryLockouts { get; set; }
 
-  [JsonPropertyName("bruteForceStrategy")]
+  [System.Text.Json.Serialization.JsonPropertyName("bruteForceStrategy")]
   public BruteForceStrategy? BruteForceStrategy { get; set; }
 
-  [JsonPropertyName("maxFailureWaitSeconds")]
+  [System.Text.Json.Serialization.JsonPropertyName("maxFailureWaitSeconds")]
   public int? MaxFailureWaitSeconds { get; set; }
 
-  [JsonPropertyName("minimumQuickLoginWaitSeconds")]
+  [System.Text.Json.Serialization.JsonPropertyName("minimumQuickLoginWaitSeconds")]
   public int? MinimumQuickLoginWaitSeconds { get; set; }
 
-  [JsonPropertyName("waitIncrementSeconds")]
+  [System.Text.Json.Serialization.JsonPropertyName("waitIncrementSeconds")]
   public int? WaitIncrementSeconds { get; set; }
 
-  [JsonPropertyName("quickLoginCheckMilliSeconds")]
+  [System.Text.Json.Serialization.JsonPropertyName("quickLoginCheckMilliSeconds")]
   public long? QuickLoginCheckMilliSeconds { get; set; }
 
-  [JsonPropertyName("maxDeltaTimeSeconds")]
+  [System.Text.Json.Serialization.JsonPropertyName("maxDeltaTimeSeconds")]
   public int? MaxDeltaTimeSeconds { get; set; }
 
-  [JsonPropertyName("failureFactor")]
+  [System.Text.Json.Serialization.JsonPropertyName("failureFactor")]
   public int? FailureFactor { get; set; }
 
-  [JsonPropertyName("privateKey")]
+  [System.Text.Json.Serialization.JsonPropertyName("privateKey")]
   public string? PrivateKey { get; set; }
 
-  [JsonPropertyName("publicKey")]
+  [System.Text.Json.Serialization.JsonPropertyName("publicKey")]
   public string? PublicKey { get; set; }
 
-  [JsonPropertyName("certificate")]
+  [System.Text.Json.Serialization.JsonPropertyName("certificate")]
   public string? Certificate { get; set; }
 
-  [JsonPropertyName("codeSecret")]
+  [System.Text.Json.Serialization.JsonPropertyName("codeSecret")]
   public string? CodeSecret { get; set; }
 
-  [JsonPropertyName("roles")]
+  [System.Text.Json.Serialization.JsonPropertyName("roles")]
   public RolesRepresentation? Roles { get; set; }
 
-  [JsonPropertyName("groups")]
+  [System.Text.Json.Serialization.JsonPropertyName("groups")]
   public List<GroupRepresentation>? Groups { get; set; }
 
-  [JsonPropertyName("defaultRoles")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultRoles")]
   public List<string?>? DefaultRoles { get; set; }
 
-  [JsonPropertyName("defaultRole")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultRole")]
   public RoleRepresentation? DefaultRole { get; set; }
 
-  [JsonPropertyName("adminPermissionsClient")]
+  [System.Text.Json.Serialization.JsonPropertyName("adminPermissionsClient")]
   public ClientRepresentation? AdminPermissionsClient { get; set; }
 
-  [JsonPropertyName("defaultGroups")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultGroups")]
   public List<string?>? DefaultGroups { get; set; }
 
-  [JsonPropertyName("requiredCredentials")]
+  [System.Text.Json.Serialization.JsonPropertyName("requiredCredentials")]
   public List<string?>? RequiredCredentials { get; set; }
 
-  [JsonPropertyName("passwordPolicy")]
+  [System.Text.Json.Serialization.JsonPropertyName("passwordPolicy")]
   public string? PasswordPolicy { get; set; }
 
-  [JsonPropertyName("otpPolicyType")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpPolicyType")]
   public string? OtpPolicyType { get; set; }
 
-  [JsonPropertyName("otpPolicyAlgorithm")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpPolicyAlgorithm")]
   public string? OtpPolicyAlgorithm { get; set; }
 
-  [JsonPropertyName("otpPolicyInitialCounter")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpPolicyInitialCounter")]
   public int? OtpPolicyInitialCounter { get; set; }
 
-  [JsonPropertyName("otpPolicyDigits")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpPolicyDigits")]
   public int? OtpPolicyDigits { get; set; }
 
-  [JsonPropertyName("otpPolicyLookAheadWindow")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpPolicyLookAheadWindow")]
   public int? OtpPolicyLookAheadWindow { get; set; }
 
-  [JsonPropertyName("otpPolicyPeriod")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpPolicyPeriod")]
   public int? OtpPolicyPeriod { get; set; }
 
-  [JsonPropertyName("otpPolicyCodeReusable")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpPolicyCodeReusable")]
   public bool? OtpPolicyCodeReusable { get; set; }
 
-  [JsonPropertyName("otpSupportedApplications")]
+  [System.Text.Json.Serialization.JsonPropertyName("otpSupportedApplications")]
   public List<string?>? OtpSupportedApplications { get; set; }
 
-  [JsonPropertyName("localizationTexts")]
+  [System.Text.Json.Serialization.JsonPropertyName("localizationTexts")]
   public Dictionary<string, Dictionary<string, string?>?>? LocalizationTexts { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyRpEntityName")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyRpEntityName")]
   public string? WebAuthnPolicyRpEntityName { get; set; }
 
-  [JsonPropertyName("webAuthnPolicySignatureAlgorithms")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicySignatureAlgorithms")]
   public List<string?>? WebAuthnPolicySignatureAlgorithms { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyRpId")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyRpId")]
   public string? WebAuthnPolicyRpId { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyAttestationConveyancePreference")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyAttestationConveyancePreference")]
   public string? WebAuthnPolicyAttestationConveyancePreference { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyAuthenticatorAttachment")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyAuthenticatorAttachment")]
   public string? WebAuthnPolicyAuthenticatorAttachment { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyRequireResidentKey")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyRequireResidentKey")]
   public string? WebAuthnPolicyRequireResidentKey { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyUserVerificationRequirement")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyUserVerificationRequirement")]
   public string? WebAuthnPolicyUserVerificationRequirement { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyCreateTimeout")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyCreateTimeout")]
   public int? WebAuthnPolicyCreateTimeout { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyAvoidSameAuthenticatorRegister")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyAvoidSameAuthenticatorRegister")]
   public bool? WebAuthnPolicyAvoidSameAuthenticatorRegister { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyAcceptableAaguids")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyAcceptableAaguids")]
   public List<string?>? WebAuthnPolicyAcceptableAaguids { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyExtraOrigins")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyExtraOrigins")]
   public List<string?>? WebAuthnPolicyExtraOrigins { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessRpEntityName")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessRpEntityName")]
   public string? WebAuthnPolicyPasswordlessRpEntityName { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessSignatureAlgorithms")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessSignatureAlgorithms")]
   public List<string?>? WebAuthnPolicyPasswordlessSignatureAlgorithms { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessRpId")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessRpId")]
   public string? WebAuthnPolicyPasswordlessRpId { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessAttestationConveyancePreference")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessAttestationConveyancePreference")]
   public string? WebAuthnPolicyPasswordlessAttestationConveyancePreference { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessAuthenticatorAttachment")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessAuthenticatorAttachment")]
   public string? WebAuthnPolicyPasswordlessAuthenticatorAttachment { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessRequireResidentKey")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessRequireResidentKey")]
   public string? WebAuthnPolicyPasswordlessRequireResidentKey { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessUserVerificationRequirement")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessUserVerificationRequirement")]
   public string? WebAuthnPolicyPasswordlessUserVerificationRequirement { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessCreateTimeout")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessCreateTimeout")]
   public int? WebAuthnPolicyPasswordlessCreateTimeout { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister")]
   public bool? WebAuthnPolicyPasswordlessAvoidSameAuthenticatorRegister { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessAcceptableAaguids")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessAcceptableAaguids")]
   public List<string?>? WebAuthnPolicyPasswordlessAcceptableAaguids { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessExtraOrigins")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessExtraOrigins")]
   public List<string?>? WebAuthnPolicyPasswordlessExtraOrigins { get; set; }
 
-  [JsonPropertyName("webAuthnPolicyPasswordlessPasskeysEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessPasskeysEnabled")]
   public bool? WebAuthnPolicyPasswordlessPasskeysEnabled { get; set; }
 
-  [JsonPropertyName("clientProfiles")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientProfiles")]
   public ClientProfilesRepresentation? ClientProfiles { get; set; }
 
-  [JsonPropertyName("clientPolicies")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientPolicies")]
   public ClientPoliciesRepresentation? ClientPolicies { get; set; }
 
-  [JsonPropertyName("users")]
+  [System.Text.Json.Serialization.JsonPropertyName("users")]
   public List<UserRepresentation>? Users { get; set; }
 
-  [JsonPropertyName("federatedUsers")]
+  [System.Text.Json.Serialization.JsonPropertyName("federatedUsers")]
   public List<UserRepresentation>? FederatedUsers { get; set; }
 
-  [JsonPropertyName("scopeMappings")]
+  [System.Text.Json.Serialization.JsonPropertyName("scopeMappings")]
   public List<ScopeMappingRepresentation>? ScopeMappings { get; set; }
 
-  [JsonPropertyName("clientScopeMappings")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientScopeMappings")]
   public Dictionary<string, List<ScopeMappingRepresentation>?>? ClientScopeMappings { get; set; }
 
-  [JsonPropertyName("clients")]
+  [System.Text.Json.Serialization.JsonPropertyName("clients")]
   public List<ClientRepresentation>? Clients { get; set; }
 
-  [JsonPropertyName("clientScopes")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientScopes")]
   public List<ClientScopeRepresentation>? ClientScopes { get; set; }
 
-  [JsonPropertyName("defaultDefaultClientScopes")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultDefaultClientScopes")]
   public List<string?>? DefaultDefaultClientScopes { get; set; }
 
-  [JsonPropertyName("defaultOptionalClientScopes")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultOptionalClientScopes")]
   public List<string?>? DefaultOptionalClientScopes { get; set; }
 
-  [JsonPropertyName("browserSecurityHeaders")]
+  [System.Text.Json.Serialization.JsonPropertyName("browserSecurityHeaders")]
   public Dictionary<string, string?>? BrowserSecurityHeaders { get; set; }
 
-  [JsonPropertyName("smtpServer")]
+  [System.Text.Json.Serialization.JsonPropertyName("smtpServer")]
   public Dictionary<string, string?>? SmtpServer { get; set; }
 
-  [JsonPropertyName("userFederationProviders")]
+  [System.Text.Json.Serialization.JsonPropertyName("userFederationProviders")]
   public List<UserFederationProviderRepresentation>? UserFederationProviders { get; set; }
 
-  [JsonPropertyName("userFederationMappers")]
+  [System.Text.Json.Serialization.JsonPropertyName("userFederationMappers")]
   public List<UserFederationMapperRepresentation>? UserFederationMappers { get; set; }
 
-  [JsonPropertyName("loginTheme")]
+  [System.Text.Json.Serialization.JsonPropertyName("loginTheme")]
   public string? LoginTheme { get; set; }
 
-  [JsonPropertyName("accountTheme")]
+  [System.Text.Json.Serialization.JsonPropertyName("accountTheme")]
   public string? AccountTheme { get; set; }
 
-  [JsonPropertyName("adminTheme")]
+  [System.Text.Json.Serialization.JsonPropertyName("adminTheme")]
   public string? AdminTheme { get; set; }
 
-  [JsonPropertyName("emailTheme")]
+  [System.Text.Json.Serialization.JsonPropertyName("emailTheme")]
   public string? EmailTheme { get; set; }
 
-  [JsonPropertyName("eventsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("eventsEnabled")]
   public bool? EventsEnabled { get; set; }
 
-  [JsonPropertyName("eventsExpiration")]
+  [System.Text.Json.Serialization.JsonPropertyName("eventsExpiration")]
   public long? EventsExpiration { get; set; }
 
-  [JsonPropertyName("eventsListeners")]
+  [System.Text.Json.Serialization.JsonPropertyName("eventsListeners")]
   public List<string?>? EventsListeners { get; set; }
 
-  [JsonPropertyName("enabledEventTypes")]
+  [System.Text.Json.Serialization.JsonPropertyName("enabledEventTypes")]
   public List<string?>? EnabledEventTypes { get; set; }
 
-  [JsonPropertyName("adminEventsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("adminEventsEnabled")]
   public bool? AdminEventsEnabled { get; set; }
 
-  [JsonPropertyName("adminEventsDetailsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("adminEventsDetailsEnabled")]
   public bool? AdminEventsDetailsEnabled { get; set; }
 
-  [JsonPropertyName("identityProviders")]
+  [System.Text.Json.Serialization.JsonPropertyName("identityProviders")]
   public List<IdentityProviderRepresentation>? IdentityProviders { get; set; }
 
-  [JsonPropertyName("identityProviderMappers")]
+  [System.Text.Json.Serialization.JsonPropertyName("identityProviderMappers")]
   public List<IdentityProviderMapperRepresentation>? IdentityProviderMappers { get; set; }
 
-  [JsonPropertyName("protocolMappers")]
+  [System.Text.Json.Serialization.JsonPropertyName("protocolMappers")]
   public List<ProtocolMapperRepresentation>? ProtocolMappers { get; set; }
 
-  [JsonPropertyName("components")]
+  [System.Text.Json.Serialization.JsonPropertyName("components")]
   public MultivaluedHashMapStringComponentExportRepresentation? Components { get; set; }
 
-  [JsonPropertyName("internationalizationEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("internationalizationEnabled")]
   public bool? InternationalizationEnabled { get; set; }
 
-  [JsonPropertyName("supportedLocales")]
+  [System.Text.Json.Serialization.JsonPropertyName("supportedLocales")]
   public List<string?>? SupportedLocales { get; set; }
 
-  [JsonPropertyName("defaultLocale")]
+  [System.Text.Json.Serialization.JsonPropertyName("defaultLocale")]
   public string? DefaultLocale { get; set; }
 
-  [JsonPropertyName("authenticationFlows")]
+  [System.Text.Json.Serialization.JsonPropertyName("authenticationFlows")]
   public List<AuthenticationFlowRepresentation>? AuthenticationFlows { get; set; }
 
-  [JsonPropertyName("authenticatorConfig")]
+  [System.Text.Json.Serialization.JsonPropertyName("authenticatorConfig")]
   public List<AuthenticatorConfigRepresentation>? AuthenticatorConfig { get; set; }
 
-  [JsonPropertyName("requiredActions")]
+  [System.Text.Json.Serialization.JsonPropertyName("requiredActions")]
   public List<RequiredActionProviderRepresentation>? RequiredActions { get; set; }
 
-  [JsonPropertyName("browserFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("browserFlow")]
   public string? BrowserFlow { get; set; }
 
-  [JsonPropertyName("registrationFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("registrationFlow")]
   public string? RegistrationFlow { get; set; }
 
-  [JsonPropertyName("directGrantFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("directGrantFlow")]
   public string? DirectGrantFlow { get; set; }
 
-  [JsonPropertyName("resetCredentialsFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("resetCredentialsFlow")]
   public string? ResetCredentialsFlow { get; set; }
 
-  [JsonPropertyName("clientAuthenticationFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientAuthenticationFlow")]
   public string? ClientAuthenticationFlow { get; set; }
 
-  [JsonPropertyName("dockerAuthenticationFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("dockerAuthenticationFlow")]
   public string? DockerAuthenticationFlow { get; set; }
 
-  [JsonPropertyName("firstBrokerLoginFlow")]
+  [System.Text.Json.Serialization.JsonPropertyName("firstBrokerLoginFlow")]
   public string? FirstBrokerLoginFlow { get; set; }
 
-  [JsonPropertyName("attributes")]
+  [System.Text.Json.Serialization.JsonPropertyName("attributes")]
   public Dictionary<string, string?>? Attributes { get; set; }
 
-  [JsonPropertyName("keycloakVersion")]
+  [System.Text.Json.Serialization.JsonPropertyName("keycloakVersion")]
   public string? KeycloakVersion { get; set; }
 
-  [JsonPropertyName("userManagedAccessAllowed")]
+  [System.Text.Json.Serialization.JsonPropertyName("userManagedAccessAllowed")]
   public bool? UserManagedAccessAllowed { get; set; }
 
-  [JsonPropertyName("organizationsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("organizationsEnabled")]
   public bool? OrganizationsEnabled { get; set; }
 
-  [JsonPropertyName("organizations")]
+  [System.Text.Json.Serialization.JsonPropertyName("organizations")]
   public List<OrganizationRepresentation>? Organizations { get; set; }
 
-  [JsonPropertyName("verifiableCredentialsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("verifiableCredentialsEnabled")]
   public bool? VerifiableCredentialsEnabled { get; set; }
 
-  [JsonPropertyName("adminPermissionsEnabled")]
+  [System.Text.Json.Serialization.JsonPropertyName("adminPermissionsEnabled")]
   public bool? AdminPermissionsEnabled { get; set; }
 
-  [JsonPropertyName("social")]
+  [System.Text.Json.Serialization.JsonPropertyName("social")]
   public bool? Social { get; set; }
 
-  [JsonPropertyName("updateProfileOnInitialSocialLogin")]
+  [System.Text.Json.Serialization.JsonPropertyName("updateProfileOnInitialSocialLogin")]
   public bool? UpdateProfileOnInitialSocialLogin { get; set; }
 
-  [JsonPropertyName("socialProviders")]
+  [System.Text.Json.Serialization.JsonPropertyName("socialProviders")]
   public Dictionary<string, string?>? SocialProviders { get; set; }
 
-  [JsonPropertyName("applicationScopeMappings")]
+  [System.Text.Json.Serialization.JsonPropertyName("applicationScopeMappings")]
   public Dictionary<string, List<ScopeMappingRepresentation>?>? ApplicationScopeMappings { get; set; }
 
-  [JsonPropertyName("applications")]
+  [System.Text.Json.Serialization.JsonPropertyName("applications")]
   public List<ApplicationRepresentation>? Applications { get; set; }
 
-  [JsonPropertyName("oauthClients")]
+  [System.Text.Json.Serialization.JsonPropertyName("oauthClients")]
   public List<OAuthClientRepresentation>? OauthClients { get; set; }
 
-  [JsonPropertyName("clientTemplates")]
+  [System.Text.Json.Serialization.JsonPropertyName("clientTemplates")]
   public List<ClientTemplateRepresentation>? ClientTemplates { get; set; }
-
 }

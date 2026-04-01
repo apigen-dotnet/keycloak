@@ -22,26 +22,26 @@ using System.Text.Json.Serialization;
 namespace Apigen.Keycloak.Admin.Models;
 
 /// <summary>
-/// Response model for ScopeRepresentation
+/// ScopeRepresentation from OpenAPI schema.
+/// Schema path: #/components/schemas/ScopeRepresentation
 /// </summary>
 public class ScopeRepresentation
 {
-  [JsonPropertyName("id")]
+  [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }
 
-  [JsonPropertyName("name")]
+  [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }
 
-  [JsonPropertyName("iconUri")]
+  [System.Text.Json.Serialization.JsonPropertyName("iconUri")]
   public string? IconUri { get; set; }
 
-  [JsonPropertyName("policies")]
+  [System.Text.Json.Serialization.JsonPropertyName("policies")]
   public List<PolicyRepresentation>? Policies { get; set; }
 
-  [JsonPropertyName("resources")]
+  [System.Text.Json.Serialization.JsonPropertyName("resources")]
   public List<ResourceRepresentation>? Resources { get; set; }
 
-  [JsonPropertyName("displayName")]
+  [System.Text.Json.Serialization.JsonPropertyName("displayName")]
   public string? DisplayName { get; set; }
-
 }

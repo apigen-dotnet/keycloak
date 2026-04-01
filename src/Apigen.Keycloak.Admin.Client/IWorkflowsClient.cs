@@ -21,7 +21,7 @@ public interface IWorkflowsClient
   /// Create workflow
   /// Operation: POST /admin/realms/{realm}/workflows
   /// </summary>
-  Task PostWorkflowsAsync(string realm, Apigen.Keycloak.Admin.Models.WorkflowRepresentationRequest workflowRepresentation);
+  Task PostWorkflowsAsync(string realm, Apigen.Keycloak.Admin.Models.WorkflowRepresentation workflowRepresentation);
 
   /// <summary>
   /// List scheduled workflows for resource
@@ -39,7 +39,7 @@ public interface IWorkflowsClient
   /// Update workflow
   /// Operation: PUT /admin/realms/{realm}/workflows/{id}
   /// </summary>
-  Task UpdateAsync(string realm, string id, Apigen.Keycloak.Admin.Models.WorkflowRepresentationRequest workflowRepresentation);
+  Task UpdateAsync(string realm, string id, Apigen.Keycloak.Admin.Models.WorkflowRepresentation workflowRepresentation);
 
   /// <summary>
   /// Delete workflow

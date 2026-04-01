@@ -33,7 +33,7 @@ public interface IRealmsAdminClient
   /// Update the top-level information of the realm Any user, roles or client information in the representation will be ignored.
   /// Operation: PUT /admin/realms/{realm}
   /// </summary>
-  Task UpdateAsync(string realm, Apigen.Keycloak.Admin.Models.RealmRepresentationRequest realmRepresentation);
+  Task UpdateAsync(string realm, Apigen.Keycloak.Admin.Models.RealmRepresentation realmRepresentation);
 
   /// <summary>
   /// Delete the realm

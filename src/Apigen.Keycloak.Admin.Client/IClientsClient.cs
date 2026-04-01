@@ -21,7 +21,7 @@ public interface IClientsClient
   /// Create a new client Client’s client_id must be unique!
   /// Operation: POST /admin/realms/{realm}/clients
   /// </summary>
-  Task PostClientsAsync(string realm, Apigen.Keycloak.Admin.Models.ClientRepresentationRequest clientRepresentation);
+  Task PostClientsAsync(string realm, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation);
 
   /// <summary>
   /// Get representation of the client
@@ -33,7 +33,7 @@ public interface IClientsClient
   /// Update the client
   /// Operation: PUT /admin/realms/{realm}/clients/{client-uuid}
   /// </summary>
-  Task UpdateAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ClientRepresentationRequest clientRepresentation);
+  Task UpdateAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation);
 
   /// <summary>
   /// Delete the client
