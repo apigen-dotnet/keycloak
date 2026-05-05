@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ErrorRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ErrorRepresentation
 /// </summary>
-public class ErrorRepresentation
+public partial class ErrorRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("field")]
   public string? Field { get; set; }

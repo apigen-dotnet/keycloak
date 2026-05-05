@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get role's children Returns a set of role's children provided the role is a composite.
 /// Operation: GET /admin/realms/{realm}/roles-by-id/{role-id}/composites
 /// </summary>
-public class GetRolesByIdRequest : BaseRequest
+public partial class GetRolesByIdRequest : BaseRequest
 {
   /// <summary>
   /// first

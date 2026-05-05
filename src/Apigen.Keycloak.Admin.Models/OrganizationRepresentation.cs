@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// OrganizationRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/OrganizationRepresentation
 /// </summary>
-public class OrganizationRepresentation
+public partial class OrganizationRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

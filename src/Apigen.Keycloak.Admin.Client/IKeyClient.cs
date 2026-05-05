@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Key operations
 /// </summary>
-public interface IKeyClient
+public partial interface IKeyClient
 {
   /// <summary>
   /// 

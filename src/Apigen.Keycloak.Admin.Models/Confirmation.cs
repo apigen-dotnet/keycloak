@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// Confirmation from OpenAPI schema.
 /// Schema path: #/components/schemas/Confirmation
 /// </summary>
-public class Confirmation
+public partial class Confirmation
 {
   [System.Text.Json.Serialization.JsonPropertyName("x5t#S256")]
   public string? X5THashS256 { get; set; }

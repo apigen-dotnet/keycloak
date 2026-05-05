@@ -25,6 +25,6 @@ namespace Apigen.Keycloak.Admin.Models;
 /// MultivaluedHashMapStringComponentExportRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/MultivaluedHashMapStringComponentExportRepresentation
 /// </summary>
-public class MultivaluedHashMapStringComponentExportRepresentation
+public partial class MultivaluedHashMapStringComponentExportRepresentation
 {
 }

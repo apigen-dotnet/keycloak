@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClientPolicyConditionRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClientPolicyConditionRepresentation
 /// </summary>
-public class ClientPolicyConditionRepresentation
+public partial class ClientPolicyConditionRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("condition")]
   public string? Condition { get; set; }

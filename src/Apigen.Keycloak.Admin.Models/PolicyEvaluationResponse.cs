@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// PolicyEvaluationResponse from OpenAPI schema.
 /// Schema path: #/components/schemas/PolicyEvaluationResponse
 /// </summary>
-public class PolicyEvaluationResponse
+public partial class PolicyEvaluationResponse
 {
   [System.Text.Json.Serialization.JsonPropertyName("results")]
   public List<EvaluationResultRepresentation>? Results { get; set; }

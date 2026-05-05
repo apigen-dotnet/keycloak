@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// RoleRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/RoleRepresentation
 /// </summary>
-public class RoleRepresentation
+public partial class RoleRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

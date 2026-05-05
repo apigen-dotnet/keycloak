@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Send an email to the user with a link they can click to execute particular actions.
 /// Operation: PUT /admin/realms/{realm}/users/{user-id}/execute-actions-email
 /// </summary>
-public class PutUsersRequest : BaseRequest
+public partial class PutUsersRequest : BaseRequest
 {
   /// <summary>
   /// Client id

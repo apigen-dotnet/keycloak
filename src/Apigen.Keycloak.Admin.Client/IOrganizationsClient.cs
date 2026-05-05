@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Organizations operations
 /// </summary>
-public interface IOrganizationsClient
+public partial interface IOrganizationsClient
 {
   /// <summary>
   /// Returns a paginated list of organizations filtered according to the specified parameters

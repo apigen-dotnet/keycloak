@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Returns a paginated list of organizations filtered according to the specified parameters
 /// Operation: GET /admin/realms/{realm}/organizations
 /// </summary>
-public class GetOrganizationsRequest : BaseRequest
+public partial class GetOrganizationsRequest : BaseRequest
 {
   /// <summary>
   /// if false, return the full representation. Otherwise, only the basic fields are returned.

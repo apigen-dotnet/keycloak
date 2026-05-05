@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// Composites from OpenAPI schema.
 /// Schema path: #/components/schemas/Composites
 /// </summary>
-public class Composites
+public partial class Composites
 {
   [System.Text.Json.Serialization.JsonPropertyName("realm")]
   public List<string?>? Realm { get; set; }

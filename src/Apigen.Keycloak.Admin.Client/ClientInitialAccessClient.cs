@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Client Initial Access operations
 /// </summary>
-public class ClientInitialAccessClient
+public partial class ClientInitialAccessClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

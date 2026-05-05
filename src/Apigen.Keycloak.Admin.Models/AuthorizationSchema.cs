@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// AuthorizationSchema from OpenAPI schema.
 /// Schema path: #/components/schemas/AuthorizationSchema
 /// </summary>
-public class AuthorizationSchema
+public partial class AuthorizationSchema
 {
   [System.Text.Json.Serialization.JsonPropertyName("resourceTypes")]
   public Dictionary<string, ResourceType>? ResourceTypes { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// MappingsRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/MappingsRepresentation
 /// </summary>
-public class MappingsRepresentation
+public partial class MappingsRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("realmMappings")]
   public List<RoleRepresentation>? RealmMappings { get; set; }

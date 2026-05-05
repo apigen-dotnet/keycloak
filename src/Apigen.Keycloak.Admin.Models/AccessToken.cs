@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// AccessToken from OpenAPI schema.
 /// Schema path: #/components/schemas/AccessToken
 /// </summary>
-public class AccessToken
+public partial class AccessToken
 {
   [System.Text.Json.Serialization.JsonPropertyName("jti")]
   public string? Jti { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// Access from OpenAPI schema.
 /// Schema path: #/components/schemas/Access
 /// </summary>
-public class Access
+public partial class Access
 {
   [System.Text.Json.Serialization.JsonPropertyName("roles")]
   public List<string?>? Roles { get; set; }

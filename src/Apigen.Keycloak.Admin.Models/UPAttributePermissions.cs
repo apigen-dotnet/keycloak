@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UPAttributePermissions from OpenAPI schema.
 /// Schema path: #/components/schemas/UPAttributePermissions
 /// </summary>
-public class UPAttributePermissions
+public partial class UPAttributePermissions
 {
   [System.Text.Json.Serialization.JsonPropertyName("view")]
   public List<string?>? View { get; set; }

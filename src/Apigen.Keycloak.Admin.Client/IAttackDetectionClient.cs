@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Attack Detection operations
 /// </summary>
-public interface IAttackDetectionClient
+public partial interface IAttackDetectionClient
 {
   /// <summary>
   /// Clear any user login failures for all users This can release temporary disabled users

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UPAttributeRequired from OpenAPI schema.
 /// Schema path: #/components/schemas/UPAttributeRequired
 /// </summary>
-public class UPAttributeRequired
+public partial class UPAttributeRequired
 {
   [System.Text.Json.Serialization.JsonPropertyName("roles")]
   public List<string?>? Roles { get; set; }

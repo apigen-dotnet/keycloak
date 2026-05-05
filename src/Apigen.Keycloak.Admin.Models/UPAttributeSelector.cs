@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UPAttributeSelector from OpenAPI schema.
 /// Schema path: #/components/schemas/UPAttributeSelector
 /// </summary>
-public class UPAttributeSelector
+public partial class UPAttributeSelector
 {
   [System.Text.Json.Serialization.JsonPropertyName("scopes")]
   public List<string?>? Scopes { get; set; }

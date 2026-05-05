@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Key operations
 /// </summary>
-public class KeyClient
+public partial class KeyClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

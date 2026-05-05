@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// AuthenticatorConfigInfoRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/AuthenticatorConfigInfoRepresentation
 /// </summary>
-public class AuthenticatorConfigInfoRepresentation
+public partial class AuthenticatorConfigInfoRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }

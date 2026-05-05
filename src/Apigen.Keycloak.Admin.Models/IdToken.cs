@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// IDToken from OpenAPI schema.
 /// Schema path: #/components/schemas/IDToken
 /// </summary>
-public class IdToken
+public partial class IdToken
 {
   [System.Text.Json.Serialization.JsonPropertyName("jti")]
   public string? Jti { get; set; }

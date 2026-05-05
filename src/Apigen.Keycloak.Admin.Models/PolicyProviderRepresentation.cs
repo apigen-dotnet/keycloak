@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// PolicyProviderRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/PolicyProviderRepresentation
 /// </summary>
-public class PolicyProviderRepresentation
+public partial class PolicyProviderRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("type")]
   public string? Type { get; set; }

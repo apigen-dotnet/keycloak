@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UserFederationProviderRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/UserFederationProviderRepresentation
 /// </summary>
-public class UserFederationProviderRepresentation
+public partial class UserFederationProviderRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// KeysMetadataRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/KeysMetadataRepresentation
 /// </summary>
-public class KeysMetadataRepresentation
+public partial class KeysMetadataRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("active")]
   public Dictionary<string, string?>? Active { get; set; }

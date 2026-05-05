@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Client Initial Access operations
 /// </summary>
-public interface IClientInitialAccessClient
+public partial interface IClientInitialAccessClient
 {
   /// <summary>
   /// 

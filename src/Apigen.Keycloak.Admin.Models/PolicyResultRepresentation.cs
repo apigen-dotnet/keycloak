@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// PolicyResultRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/PolicyResultRepresentation
 /// </summary>
-public class PolicyResultRepresentation
+public partial class PolicyResultRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("policy")]
   public PolicyRepresentation? Policy { get; set; }

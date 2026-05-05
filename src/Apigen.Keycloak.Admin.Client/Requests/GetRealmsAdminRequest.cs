@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get accessible realms Returns a list of accessible realms. The list is filtered based on what realms the caller is allowed to view.
 /// Operation: GET /admin/realms
 /// </summary>
-public class GetRealmsAdminRequest : BaseRequest
+public partial class GetRealmsAdminRequest : BaseRequest
 {
   /// <summary>
   /// briefRepresentation

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ConfigPropertyRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ConfigPropertyRepresentation
 /// </summary>
-public class ConfigPropertyRepresentation
+public partial class ConfigPropertyRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UserProfileAttributeGroupMetadata from OpenAPI schema.
 /// Schema path: #/components/schemas/UserProfileAttributeGroupMetadata
 /// </summary>
-public class UserProfileAttributeGroupMetadata
+public partial class UserProfileAttributeGroupMetadata
 {
   [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }

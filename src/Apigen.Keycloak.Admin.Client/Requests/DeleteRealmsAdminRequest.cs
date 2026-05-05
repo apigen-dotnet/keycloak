@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Remove a specific user session.
 /// Operation: DELETE /admin/realms/{realm}/sessions/{session}
 /// </summary>
-public class DeleteRealmsAdminRequest : BaseRequest
+public partial class DeleteRealmsAdminRequest : BaseRequest
 {
   /// <summary>
   /// isOffline

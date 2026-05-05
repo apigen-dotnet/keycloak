@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// AuthenticationFlowRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/AuthenticationFlowRepresentation
 /// </summary>
-public class AuthenticationFlowRepresentation
+public partial class AuthenticationFlowRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

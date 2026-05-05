@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// IdentityProviderMapperTypeRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/IdentityProviderMapperTypeRepresentation
 /// </summary>
-public class IdentityProviderMapperTypeRepresentation
+public partial class IdentityProviderMapperTypeRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

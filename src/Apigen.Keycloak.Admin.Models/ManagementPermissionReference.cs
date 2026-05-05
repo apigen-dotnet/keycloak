@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ManagementPermissionReference from OpenAPI schema.
 /// Schema path: #/components/schemas/ManagementPermissionReference
 /// </summary>
-public class ManagementPermissionReference
+public partial class ManagementPermissionReference
 {
   [System.Text.Json.Serialization.JsonPropertyName("enabled")]
   public bool? Enabled { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// WorkflowScheduleRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/WorkflowScheduleRepresentation
 /// </summary>
-public class WorkflowScheduleRepresentation
+public partial class WorkflowScheduleRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("after")]
   public string? After { get; set; }

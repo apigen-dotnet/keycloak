@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// RequiredActionProviderRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/RequiredActionProviderRepresentation
 /// </summary>
-public class RequiredActionProviderRepresentation
+public partial class RequiredActionProviderRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("alias")]
   public string? Alias { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// WorkflowStateRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/WorkflowStateRepresentation
 /// </summary>
-public class WorkflowStateRepresentation
+public partial class WorkflowStateRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("errors")]
   public List<string?>? Errors { get; set; }

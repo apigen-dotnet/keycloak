@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClientProfilesRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClientProfilesRepresentation
 /// </summary>
-public class ClientProfilesRepresentation
+public partial class ClientProfilesRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("profiles")]
   public List<ClientProfileRepresentation>? Profiles { get; set; }

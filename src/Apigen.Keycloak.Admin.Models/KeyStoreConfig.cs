@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// KeyStoreConfig from OpenAPI schema.
 /// Schema path: #/components/schemas/KeyStoreConfig
 /// </summary>
-public class KeyStoreConfig
+public partial class KeyStoreConfig
 {
   [System.Text.Json.Serialization.JsonPropertyName("realmCertificate")]
   public bool? RealmCertificate { get; set; }

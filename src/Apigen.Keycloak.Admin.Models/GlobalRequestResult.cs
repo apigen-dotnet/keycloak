@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// GlobalRequestResult from OpenAPI schema.
 /// Schema path: #/components/schemas/GlobalRequestResult
 /// </summary>
-public class GlobalRequestResult
+public partial class GlobalRequestResult
 {
   [System.Text.Json.Serialization.JsonPropertyName("successRequests")]
   public List<string?>? SuccessRequests { get; set; }

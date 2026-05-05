@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Component operations
 /// </summary>
-public interface IComponentClient
+public partial interface IComponentClient
 {
   /// <summary>
   /// 

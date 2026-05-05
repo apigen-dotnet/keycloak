@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// EventRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/EventRepresentation
 /// </summary>
-public class EventRepresentation
+public partial class EventRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

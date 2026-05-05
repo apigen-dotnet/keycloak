@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// KeyMetadataRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/KeyMetadataRepresentation
 /// </summary>
-public class KeyMetadataRepresentation
+public partial class KeyMetadataRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("providerId")]
   public string? ProviderId { get; set; }

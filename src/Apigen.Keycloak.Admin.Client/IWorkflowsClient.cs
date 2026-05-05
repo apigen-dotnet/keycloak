@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Workflows operations
 /// </summary>
-public interface IWorkflowsClient
+public partial interface IWorkflowsClient
 {
   /// <summary>
   /// List workflows

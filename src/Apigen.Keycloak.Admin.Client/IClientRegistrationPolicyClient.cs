@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Client Registration Policy operations
 /// </summary>
-public interface IClientRegistrationPolicyClient
+public partial interface IClientRegistrationPolicyClient
 {
   /// <summary>
   /// Base path for retrieve providers with the configProperties properly filled

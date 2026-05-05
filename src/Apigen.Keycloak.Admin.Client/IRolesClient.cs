@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Roles operations
 /// </summary>
-public interface IRolesClient
+public partial interface IRolesClient
 {
   /// <summary>
   /// Get all roles for the realm or client

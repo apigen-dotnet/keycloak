@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// PolicyEvaluationRequest from OpenAPI schema.
 /// Schema path: #/components/schemas/PolicyEvaluationRequest
 /// </summary>
-public class PolicyEvaluationRequest
+public partial class PolicyEvaluationRequest
 {
   [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
   [System.Text.Json.Serialization.JsonPropertyName("context")]

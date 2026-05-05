@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Client Attribute Certificate operations
 /// </summary>
-public interface IClientAttributeCertificateClient
+public partial interface IClientAttributeCertificateClient
 {
   /// <summary>
   /// Get key info

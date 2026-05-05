@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClientScopeRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClientScopeRepresentation
 /// </summary>
-public class ClientScopeRepresentation
+public partial class ClientScopeRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for 
 /// Operation: GET /admin/realms/{realm}/components
 /// </summary>
-public class GetComponentRequest : BaseRequest
+public partial class GetComponentRequest : BaseRequest
 {
   /// <summary>
   /// name

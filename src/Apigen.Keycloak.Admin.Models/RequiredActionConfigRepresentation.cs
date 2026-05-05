@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// RequiredActionConfigRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/RequiredActionConfigRepresentation
 /// </summary>
-public class RequiredActionConfigRepresentation
+public partial class RequiredActionConfigRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("config")]
   public Dictionary<string, string?>? Config { get; set; }

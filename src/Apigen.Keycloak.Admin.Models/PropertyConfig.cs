@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// PropertyConfig from OpenAPI schema.
 /// Schema path: #/components/schemas/PropertyConfig
 /// </summary>
-public class PropertyConfig
+public partial class PropertyConfig
 {
   [System.Text.Json.Serialization.JsonPropertyName("applicable")]
   public bool? Applicable { get; set; }

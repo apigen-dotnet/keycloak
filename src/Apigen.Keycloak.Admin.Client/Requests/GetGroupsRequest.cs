@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get group hierarchy.  Only `name` and `id` are returned.  `subGroups` are only returned when using the `search` or `q` parameter. If none of these parameters is provided, the top-level groups are returned without `subGroups` being filled.
 /// Operation: GET /admin/realms/{realm}/groups
 /// </summary>
-public class GetGroupsRequest : BaseRequest
+public partial class GetGroupsRequest : BaseRequest
 {
   /// <summary>
   /// briefRepresentation

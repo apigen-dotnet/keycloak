@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get effective client roles Returns the roles for the client that are associated with the client's scope.
 /// Operation: GET /admin/realms/{realm}/client-scopes/{client-scope-id}/scope-mappings/clients/{client}/composite
 /// </summary>
-public class GetScopeMappingsRequest : BaseRequest
+public partial class GetScopeMappingsRequest : BaseRequest
 {
   /// <summary>
   /// if false, return roles with their attributes

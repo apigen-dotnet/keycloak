@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ScopeRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ScopeRepresentation
 /// </summary>
-public class ScopeRepresentation
+public partial class ScopeRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

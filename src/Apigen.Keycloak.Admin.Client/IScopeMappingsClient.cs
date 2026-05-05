@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Scope Mappings operations
 /// </summary>
-public interface IScopeMappingsClient
+public partial interface IScopeMappingsClient
 {
   /// <summary>
   /// Get all scope mappings for the client

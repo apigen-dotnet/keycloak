@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ResourceType from OpenAPI schema.
 /// Schema path: #/components/schemas/ResourceType
 /// </summary>
-public class ResourceType
+public partial class ResourceType
 {
   [System.Text.Json.Serialization.JsonPropertyName("type")]
   public string? Type { get; set; }

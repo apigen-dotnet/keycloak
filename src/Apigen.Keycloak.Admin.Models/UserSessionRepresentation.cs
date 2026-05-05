@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UserSessionRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/UserSessionRepresentation
 /// </summary>
-public class UserSessionRepresentation
+public partial class UserSessionRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

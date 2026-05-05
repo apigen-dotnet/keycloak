@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ProtocolMapperEvaluationRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ProtocolMapperEvaluationRepresentation
 /// </summary>
-public class ProtocolMapperEvaluationRepresentation
+public partial class ProtocolMapperEvaluationRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("mapperId")]
   public string? MapperId { get; set; }

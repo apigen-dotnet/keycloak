@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Partial export of existing realm into a JSON file.
 /// Operation: POST /admin/realms/{realm}/partial-export
 /// </summary>
-public class PostRealmsAdminRequest : BaseRequest
+public partial class PostRealmsAdminRequest : BaseRequest
 {
   /// <summary>
   /// exportClients

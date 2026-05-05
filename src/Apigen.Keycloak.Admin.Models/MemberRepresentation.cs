@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// MemberRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/MemberRepresentation
 /// </summary>
-public class MemberRepresentation
+public partial class MemberRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

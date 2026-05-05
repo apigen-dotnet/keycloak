@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Activate workflow for resource
 /// Operation: POST /admin/realms/{realm}/workflows/{id}/activate/{type}/{resourceId}
 /// </summary>
-public class PostWorkflowsRequest : BaseRequest
+public partial class PostWorkflowsRequest : BaseRequest
 {
   /// <summary>
   /// Optional value representing the time to schedule the first workflow step. The value is either an integer representing the seconds from now, an integer followed by &apos;ms&apos; representing milliseconds from now, or an ISO-8601 date string.

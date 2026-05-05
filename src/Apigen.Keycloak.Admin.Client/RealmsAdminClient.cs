@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Realms Admin operations
 /// </summary>
-public class RealmsAdminClient
+public partial class RealmsAdminClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

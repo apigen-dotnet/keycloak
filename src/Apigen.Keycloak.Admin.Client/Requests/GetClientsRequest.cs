@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get clients belonging to the realm.
 /// Operation: GET /admin/realms/{realm}/clients
 /// </summary>
-public class GetClientsRequest : BaseRequest
+public partial class GetClientsRequest : BaseRequest
 {
   /// <summary>
   /// filter by clientId

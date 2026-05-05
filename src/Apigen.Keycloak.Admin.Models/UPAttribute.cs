@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UPAttribute from OpenAPI schema.
 /// Schema path: #/components/schemas/UPAttribute
 /// </summary>
-public class UPAttribute
+public partial class UPAttribute
 {
   [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }

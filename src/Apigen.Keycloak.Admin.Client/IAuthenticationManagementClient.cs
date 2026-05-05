@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Authentication Management operations
 /// </summary>
-public interface IAuthenticationManagementClient
+public partial interface IAuthenticationManagementClient
 {
   /// <summary>
   /// Get authenticator providers Returns a stream of authenticator providers.

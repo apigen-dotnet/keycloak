@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get users Returns a stream of users, filtered according to query parameters.
 /// Operation: GET /admin/realms/{realm}/users
 /// </summary>
-public class GetUsersRequest : BaseRequest
+public partial class GetUsersRequest : BaseRequest
 {
   /// <summary>
   /// Boolean which defines whether brief representations are returned (default: false)

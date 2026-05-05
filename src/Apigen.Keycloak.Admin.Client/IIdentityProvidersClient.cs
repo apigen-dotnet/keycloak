@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Identity Providers operations
 /// </summary>
-public interface IIdentityProvidersClient
+public partial interface IIdentityProvidersClient
 {
   /// <summary>
   /// Import identity provider from JSON body

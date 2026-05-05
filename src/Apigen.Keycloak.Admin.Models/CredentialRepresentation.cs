@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// CredentialRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/CredentialRepresentation
 /// </summary>
-public class CredentialRepresentation
+public partial class CredentialRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

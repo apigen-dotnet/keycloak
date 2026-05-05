@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// RealmEventsConfigRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/RealmEventsConfigRepresentation
 /// </summary>
-public class RealmEventsConfigRepresentation
+public partial class RealmEventsConfigRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("eventsEnabled")]
   public bool? EventsEnabled { get; set; }

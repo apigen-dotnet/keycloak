@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get all roles for the realm or client
 /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/roles
 /// </summary>
-public class GetRolesRequest : BaseRequest
+public partial class GetRolesRequest : BaseRequest
 {
   /// <summary>
   /// briefRepresentation

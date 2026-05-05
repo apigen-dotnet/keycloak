@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// EvaluationResultRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/EvaluationResultRepresentation
 /// </summary>
-public class EvaluationResultRepresentation
+public partial class EvaluationResultRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("resource")]
   public ResourceRepresentation? Resource { get; set; }

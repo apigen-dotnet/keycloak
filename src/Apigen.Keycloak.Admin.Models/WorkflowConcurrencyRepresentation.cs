@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// WorkflowConcurrencyRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/WorkflowConcurrencyRepresentation
 /// </summary>
-public class WorkflowConcurrencyRepresentation
+public partial class WorkflowConcurrencyRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("cancel-in-progress")]
   public string? CancelInProgress { get; set; }

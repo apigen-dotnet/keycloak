@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClientInitialAccessPresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClientInitialAccessPresentation
 /// </summary>
-public class ClientInitialAccessPresentation
+public partial class ClientInitialAccessPresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

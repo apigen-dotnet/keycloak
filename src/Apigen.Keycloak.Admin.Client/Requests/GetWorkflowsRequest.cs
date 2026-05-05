@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for List workflows
 /// Operation: GET /admin/realms/{realm}/workflows
 /// </summary>
-public class GetWorkflowsRequest : BaseRequest
+public partial class GetWorkflowsRequest : BaseRequest
 {
   /// <summary>
   /// Boolean which defines whether the param &apos;search&apos; must match exactly or not

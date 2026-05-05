@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Identity Providers operations
 /// </summary>
-public class IdentityProvidersClient
+public partial class IdentityProvidersClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

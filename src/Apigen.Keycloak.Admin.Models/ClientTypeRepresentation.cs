@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClientTypeRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClientTypeRepresentation
 /// </summary>
-public class ClientTypeRepresentation
+public partial class ClientTypeRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClientPolicyExecutorRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClientPolicyExecutorRepresentation
 /// </summary>
-public class ClientPolicyExecutorRepresentation
+public partial class ClientPolicyExecutorRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("executor")]
   public string? Executor { get; set; }

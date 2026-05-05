@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Client Role Mappings operations
 /// </summary>
-public interface IClientRoleMappingsClient
+public partial interface IClientRoleMappingsClient
 {
   /// <summary>
   /// Get client-level role mappings for the user or group, and the app

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// PublishedRealmRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/PublishedRealmRepresentation
 /// </summary>
-public class PublishedRealmRepresentation
+public partial class PublishedRealmRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("realm")]
   public string? Realm { get; set; }

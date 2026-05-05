@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// FederatedIdentityRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/FederatedIdentityRepresentation
 /// </summary>
-public class FederatedIdentityRepresentation
+public partial class FederatedIdentityRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("identityProvider")]
   public string? IdentityProvider { get; set; }

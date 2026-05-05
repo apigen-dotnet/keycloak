@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Client Scopes operations
 /// </summary>
-public interface IClientScopesClient
+public partial interface IClientScopesClient
 {
   /// <summary>
   /// Get client scopes belonging to the realm Returns a list of client scopes belonging to the realm

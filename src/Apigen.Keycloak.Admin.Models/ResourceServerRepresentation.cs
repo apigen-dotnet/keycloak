@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ResourceServerRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ResourceServerRepresentation
 /// </summary>
-public class ResourceServerRepresentation
+public partial class ResourceServerRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

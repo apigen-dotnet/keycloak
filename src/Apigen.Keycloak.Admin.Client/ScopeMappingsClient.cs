@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Scope Mappings operations
 /// </summary>
-public class ScopeMappingsClient
+public partial class ScopeMappingsClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Clients operations
 /// </summary>
-public interface IClientsClient
+public partial interface IClientsClient
 {
   /// <summary>
   /// Get clients belonging to the realm.

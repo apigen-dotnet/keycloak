@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Attack Detection operations
 /// </summary>
-public class AttackDetectionClient
+public partial class AttackDetectionClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

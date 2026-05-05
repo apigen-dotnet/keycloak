@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// AuthDetailsRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/AuthDetailsRepresentation
 /// </summary>
-public class AuthDetailsRepresentation
+public partial class AuthDetailsRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("realmId")]
   public string? RealmId { get; set; }

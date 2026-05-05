@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClaimRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClaimRepresentation
 /// </summary>
-public class ClaimRepresentation
+public partial class ClaimRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("name")]
   public bool? Name { get; set; }

@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Realms Admin operations
 /// </summary>
-public interface IRealmsAdminClient
+public partial interface IRealmsAdminClient
 {
   /// <summary>
   /// Get accessible realms Returns a list of accessible realms. The list is filtered based on what realms the caller is allowed to view.

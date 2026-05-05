@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Workflows operations
 /// </summary>
-public class WorkflowsClient
+public partial class WorkflowsClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

@@ -25,6 +25,6 @@ namespace Apigen.Keycloak.Admin.Models;
 /// MultivaluedHashMapStringString from OpenAPI schema.
 /// Schema path: #/components/schemas/MultivaluedHashMapStringString
 /// </summary>
-public class MultivaluedHashMapStringString
+public partial class MultivaluedHashMapStringString
 {
 }

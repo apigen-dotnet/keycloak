@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ComponentRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ComponentRepresentation
 /// </summary>
-public class ComponentRepresentation
+public partial class ComponentRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Client Attribute Certificate operations
 /// </summary>
-public class ClientAttributeCertificateClient
+public partial class ClientAttributeCertificateClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

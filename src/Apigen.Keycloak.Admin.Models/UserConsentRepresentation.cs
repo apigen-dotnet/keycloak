@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UserConsentRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/UserConsentRepresentation
 /// </summary>
-public class UserConsentRepresentation
+public partial class UserConsentRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("clientId")]
   public string? ClientId { get; set; }

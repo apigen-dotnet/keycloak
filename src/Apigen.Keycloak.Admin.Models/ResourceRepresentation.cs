@@ -24,7 +24,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// <summary>
 /// Response model for ResourceRepresentation
 /// </summary>
-public class ResourceRepresentation
+public partial class ResourceRepresentation
 {
   [JsonPropertyName("_id")]
   public string? Id { get; set; }

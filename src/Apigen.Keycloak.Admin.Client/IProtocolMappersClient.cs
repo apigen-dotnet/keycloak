@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Protocol Mappers operations
 /// </summary>
-public interface IProtocolMappersClient
+public partial interface IProtocolMappersClient
 {
   /// <summary>
   /// Create multiple mappers

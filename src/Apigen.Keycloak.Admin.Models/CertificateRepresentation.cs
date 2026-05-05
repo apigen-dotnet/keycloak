@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// CertificateRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/CertificateRepresentation
 /// </summary>
-public class CertificateRepresentation
+public partial class CertificateRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("privateKey")]
   public string? PrivateKey { get; set; }

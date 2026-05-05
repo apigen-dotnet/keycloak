@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// UPGroup from OpenAPI schema.
 /// Schema path: #/components/schemas/UPGroup
 /// </summary>
-public class UPGroup
+public partial class UPGroup
 {
   [System.Text.Json.Serialization.JsonPropertyName("name")]
   public string? Name { get; set; }

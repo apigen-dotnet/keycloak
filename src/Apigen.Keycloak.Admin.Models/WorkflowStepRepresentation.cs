@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// WorkflowStepRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/WorkflowStepRepresentation
 /// </summary>
-public class WorkflowStepRepresentation
+public partial class WorkflowStepRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("uses")]
   public string? Uses { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// Permission from OpenAPI schema.
 /// Schema path: #/components/schemas/Permission
 /// </summary>
-public class Permission
+public partial class Permission
 {
   [System.Text.Json.Serialization.JsonPropertyName("rsid")]
   public string? Rsid { get; set; }

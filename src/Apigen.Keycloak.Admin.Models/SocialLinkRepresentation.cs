@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// SocialLinkRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/SocialLinkRepresentation
 /// </summary>
-public class SocialLinkRepresentation
+public partial class SocialLinkRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("socialProvider")]
   public string? SocialProvider { get; set; }

@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// GroupRepresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/GroupRepresentation
 /// </summary>
-public class GroupRepresentation
+public partial class GroupRepresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }

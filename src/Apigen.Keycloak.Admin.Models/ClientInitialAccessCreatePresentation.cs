@@ -25,7 +25,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// ClientInitialAccessCreatePresentation from OpenAPI schema.
 /// Schema path: #/components/schemas/ClientInitialAccessCreatePresentation
 /// </summary>
-public class ClientInitialAccessCreatePresentation
+public partial class ClientInitialAccessCreatePresentation
 {
   [System.Text.Json.Serialization.JsonPropertyName("expiration")]
   public int? Expiration { get; set; }

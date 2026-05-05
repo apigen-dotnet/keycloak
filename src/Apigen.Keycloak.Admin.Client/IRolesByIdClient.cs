@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Roles (by ID) operations
 /// </summary>
-public interface IRolesByIdClient
+public partial interface IRolesByIdClient
 {
   /// <summary>
   /// Get a specific role&apos;s representation

@@ -9,7 +9,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Interface for Users operations
 /// </summary>
-public interface IUsersClient
+public partial interface IUsersClient
 {
   /// <summary>
   /// Get users Returns a stream of users, filtered according to query parameters.

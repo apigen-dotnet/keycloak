@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Roles (by ID) operations
 /// </summary>
-public class RolesByIdClient
+public partial class RolesByIdClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

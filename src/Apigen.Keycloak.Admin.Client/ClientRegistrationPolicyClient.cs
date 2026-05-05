@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Client Registration Policy operations
 /// </summary>
-public class ClientRegistrationPolicyClient
+public partial class ClientRegistrationPolicyClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

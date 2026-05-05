@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for Get effective realm-level role mappings This will recurse all composite roles to get the result.
 /// Operation: GET /admin/realms/{realm}/groups/{group-id}/role-mappings/realm/composite
 /// </summary>
-public class GetRoleMapperRequest : BaseRequest
+public partial class GetRoleMapperRequest : BaseRequest
 {
   /// <summary>
   /// if false, return roles with their attributes

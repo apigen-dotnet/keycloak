@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Protocol Mappers operations
 /// </summary>
-public class ProtocolMappersClient
+public partial class ProtocolMappersClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;

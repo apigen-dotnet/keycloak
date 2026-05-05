@@ -11,7 +11,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// Request parameters for List identity providers
 /// Operation: GET /admin/realms/{realm}/identity-provider/instances
 /// </summary>
-public class GetIdentityProvidersRequest : BaseRequest
+public partial class GetIdentityProvidersRequest : BaseRequest
 {
   /// <summary>
   /// Boolean which defines whether brief representations are returned (default: false)

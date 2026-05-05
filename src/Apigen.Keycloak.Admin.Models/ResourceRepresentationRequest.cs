@@ -24,7 +24,7 @@ namespace Apigen.Keycloak.Admin.Models;
 /// <summary>
 /// Request model for ResourceRepresentation
 /// </summary>
-public class ResourceRepresentationRequest
+public partial class ResourceRepresentationRequest
 {
   [System.Text.Json.Serialization.JsonIgnore(Condition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull)]
   [JsonPropertyName("_id")]

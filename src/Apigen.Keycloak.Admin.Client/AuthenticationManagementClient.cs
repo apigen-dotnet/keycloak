@@ -14,7 +14,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Client for Authentication Management operations
 /// </summary>
-public class AuthenticationManagementClient
+public partial class AuthenticationManagementClient
 {
   private readonly HttpClient _httpClient;
   private readonly ILogger? _logger;
