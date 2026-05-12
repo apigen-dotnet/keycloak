@@ -12,7 +12,7 @@ namespace Apigen.Keycloak.Admin.Client;
 /// <summary>
 /// Main API client for accessing all resources
 /// </summary>
-public partial class KeycloakAdminClient
+public partial class KeycloakAdminClient : IDisposable
 {
   private readonly HttpClient _httpClient;
   private readonly bool _disposeHttpClient;
