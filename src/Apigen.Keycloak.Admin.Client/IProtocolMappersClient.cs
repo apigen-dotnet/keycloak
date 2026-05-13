@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 
@@ -15,126 +16,126 @@ public partial interface IProtocolMappersClient
   /// Create multiple mappers
   /// Operation: POST /admin/realms/{realm}/client-scopes/{client-scope-id}/protocol-mappers/add-models
   /// </summary>
-  Task PostProtocolMappersAsync(string realm, string clientScopeId);
+  Task PostProtocolMappersAsync(string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mappers
   /// Operation: GET /admin/realms/{realm}/client-scopes/{client-scope-id}/protocol-mappers/models
   /// </summary>
-  Task<List<ProtocolMapperRepresentation>> GetProtocolMappersAsync(string realm, string clientScopeId);
+  Task<List<ProtocolMapperRepresentation>> GetProtocolMappersAsync(string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Create a mapper
   /// Operation: POST /admin/realms/{realm}/client-scopes/{client-scope-id}/protocol-mappers/models
   /// </summary>
-  Task PostProtocolMappersAsync(string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation);
+  Task PostProtocolMappersAsync(string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mapper by id
   /// Operation: GET /admin/realms/{realm}/client-scopes/{client-scope-id}/protocol-mappers/models/{id}
   /// </summary>
-  Task<ProtocolMapperRepresentation> GetAsync(string id, string realm, string clientScopeId);
+  Task<ProtocolMapperRepresentation> GetAsync(string id, string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Update the mapper
   /// Operation: PUT /admin/realms/{realm}/client-scopes/{client-scope-id}/protocol-mappers/models/{id}
   /// </summary>
-  Task UpdateAsync(string id, string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation);
+  Task UpdateAsync(string id, string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Delete the mapper
   /// Operation: DELETE /admin/realms/{realm}/client-scopes/{client-scope-id}/protocol-mappers/models/{id}
   /// </summary>
-  Task DeleteAsync(string id, string realm, string clientScopeId);
+  Task DeleteAsync(string id, string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mappers by name for a specific protocol
   /// Operation: GET /admin/realms/{realm}/client-scopes/{client-scope-id}/protocol-mappers/protocol/{protocol}
   /// </summary>
-  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientScopesProtocolMappersProtocolAsync(string protocol, string realm, string clientScopeId);
+  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientScopesProtocolMappersProtocolAsync(string protocol, string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Create multiple mappers
   /// Operation: POST /admin/realms/{realm}/client-templates/{client-scope-id}/protocol-mappers/add-models
   /// </summary>
-  Task PostAdminRealmsClientTemplatesProtocolMappersAddModelsAsync(string realm, string clientScopeId);
+  Task PostAdminRealmsClientTemplatesProtocolMappersAddModelsAsync(string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mappers
   /// Operation: GET /admin/realms/{realm}/client-templates/{client-scope-id}/protocol-mappers/models
   /// </summary>
-  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientTemplatesProtocolMappersModelsAsync(string realm, string clientScopeId);
+  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientTemplatesProtocolMappersModelsAsync(string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Create a mapper
   /// Operation: POST /admin/realms/{realm}/client-templates/{client-scope-id}/protocol-mappers/models
   /// </summary>
-  Task PostAdminRealmsClientTemplatesProtocolMappersModelsAsync(string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation);
+  Task PostAdminRealmsClientTemplatesProtocolMappersModelsAsync(string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mapper by id
   /// Operation: GET /admin/realms/{realm}/client-templates/{client-scope-id}/protocol-mappers/models/{id}
   /// </summary>
-  Task<ProtocolMapperRepresentation> GetAdminRealmsClientTemplatesProtocolMappersModelsAsync(string id, string realm, string clientScopeId);
+  Task<ProtocolMapperRepresentation> GetAdminRealmsClientTemplatesProtocolMappersModelsAsync(string id, string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Update the mapper
   /// Operation: PUT /admin/realms/{realm}/client-templates/{client-scope-id}/protocol-mappers/models/{id}
   /// </summary>
-  Task PutAdminRealmsClientTemplatesProtocolMappersModelsAsync(string id, string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation);
+  Task PutAdminRealmsClientTemplatesProtocolMappersModelsAsync(string id, string realm, string clientScopeId, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Delete the mapper
   /// Operation: DELETE /admin/realms/{realm}/client-templates/{client-scope-id}/protocol-mappers/models/{id}
   /// </summary>
-  Task DeleteAdminRealmsClientTemplatesProtocolMappersModelsAsync(string id, string realm, string clientScopeId);
+  Task DeleteAdminRealmsClientTemplatesProtocolMappersModelsAsync(string id, string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mappers by name for a specific protocol
   /// Operation: GET /admin/realms/{realm}/client-templates/{client-scope-id}/protocol-mappers/protocol/{protocol}
   /// </summary>
-  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientTemplatesProtocolMappersProtocolAsync(string protocol, string realm, string clientScopeId);
+  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientTemplatesProtocolMappersProtocolAsync(string protocol, string realm, string clientScopeId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Create multiple mappers
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/protocol-mappers/add-models
   /// </summary>
-  Task PostAdminRealmsClientsProtocolMappersAddModelsAsync(string realm, string clientUuid);
+  Task PostAdminRealmsClientsProtocolMappersAddModelsAsync(string realm, string clientUuid, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mappers
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/protocol-mappers/models
   /// </summary>
-  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientsProtocolMappersModelsAsync(string realm, string clientUuid);
+  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientsProtocolMappersModelsAsync(string realm, string clientUuid, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Create a mapper
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/protocol-mappers/models
   /// </summary>
-  Task PostAdminRealmsClientsProtocolMappersModelsAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation);
+  Task PostAdminRealmsClientsProtocolMappersModelsAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mapper by id
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/protocol-mappers/models/{id}
   /// </summary>
-  Task<ProtocolMapperRepresentation> GetAdminRealmsClientsProtocolMappersModelsAsync(string id, string realm, string clientUuid);
+  Task<ProtocolMapperRepresentation> GetAdminRealmsClientsProtocolMappersModelsAsync(string id, string realm, string clientUuid, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Update the mapper
   /// Operation: PUT /admin/realms/{realm}/clients/{client-uuid}/protocol-mappers/models/{id}
   /// </summary>
-  Task PutAdminRealmsClientsProtocolMappersModelsAsync(string id, string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation);
+  Task PutAdminRealmsClientsProtocolMappersModelsAsync(string id, string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ProtocolMapperRepresentation protocolMapperRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Delete the mapper
   /// Operation: DELETE /admin/realms/{realm}/clients/{client-uuid}/protocol-mappers/models/{id}
   /// </summary>
-  Task DeleteAdminRealmsClientsProtocolMappersModelsAsync(string id, string realm, string clientUuid);
+  Task DeleteAdminRealmsClientsProtocolMappersModelsAsync(string id, string realm, string clientUuid, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get mappers by name for a specific protocol
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/protocol-mappers/protocol/{protocol}
   /// </summary>
-  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientsProtocolMappersProtocolAsync(string protocol, string realm, string clientUuid);
+  Task<List<ProtocolMapperRepresentation>> GetAdminRealmsClientsProtocolMappersProtocolAsync(string protocol, string realm, string clientUuid, CancellationToken cancellationToken = default);
 
 }

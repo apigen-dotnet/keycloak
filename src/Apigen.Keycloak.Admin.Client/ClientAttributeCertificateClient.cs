@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,7 @@ public partial class ClientAttributeCertificateClient
   /// Get key info
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/certificates/{attr}
   /// </summary>
-  public async Task<CertificateRepresentation> GetAsync(string realm, string clientUuid, string attr)
+  public async Task<CertificateRepresentation> GetAsync(string realm, string clientUuid, string attr, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -39,28 +40,41 @@ public partial class ClientAttributeCertificateClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/certificates/{attr}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CertificateRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CertificateRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -68,7 +82,7 @@ public partial class ClientAttributeCertificateClient
   /// Get a keystore file for the client, containing private key and public certificate
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/certificates/{attr}/download
   /// </summary>
-  public async Task<Stream> PostClientAttributeCertificateAsync(string realm, string clientUuid, string attr, Apigen.Keycloak.Admin.Models.KeyStoreConfig keyStoreConfig)
+  public async Task<Stream> PostClientAttributeCertificateAsync(string realm, string clientUuid, string attr, Apigen.Keycloak.Admin.Models.KeyStoreConfig keyStoreConfig, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -78,26 +92,41 @@ public partial class ClientAttributeCertificateClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/certificates/{attr}/download".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    string json = JsonSerializer.Serialize(keyStoreConfig, JsonConfig.Default);
-    HttpClientLog.LogTraceRequestBody(_logger, "POST", "application/json", json);
-    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-    HttpResponseMessage response = await _httpClient.PostAsync(url, content);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      string json = JsonSerializer.Serialize(keyStoreConfig, JsonConfig.Default);
+      HttpClientLog.LogTraceRequestBody(_logger, "POST", "application/json", json);
+      StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+      HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      return await response.Content.ReadAsStreamAsync(cancellationToken);
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string errorContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-    return await response.Content.ReadAsStreamAsync();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -105,7 +134,7 @@ public partial class ClientAttributeCertificateClient
   /// Generate a new certificate with new key pair
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/certificates/{attr}/generate
   /// </summary>
-  public async Task<CertificateRepresentation> PostClientAttributeCertificateAsync(string realm, string clientUuid, string attr)
+  public async Task<CertificateRepresentation> PostClientAttributeCertificateAsync(string realm, string clientUuid, string attr, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -115,28 +144,41 @@ public partial class ClientAttributeCertificateClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/certificates/{attr}/generate".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CertificateRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CertificateRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -147,7 +189,7 @@ public partial class ClientAttributeCertificateClient
   /// Only generated public certificate is saved in Keycloak DB - the private key is not.
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/certificates/{attr}/generate-and-download
   /// </summary>
-  public async Task<Stream> PostAdminRealmsClientsCertificatesGenerateAndDownloadAsync(string realm, string clientUuid, string attr, Apigen.Keycloak.Admin.Models.KeyStoreConfig keyStoreConfig)
+  public async Task<Stream> PostAdminRealmsClientsCertificatesGenerateAndDownloadAsync(string realm, string clientUuid, string attr, Apigen.Keycloak.Admin.Models.KeyStoreConfig keyStoreConfig, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -157,26 +199,41 @@ public partial class ClientAttributeCertificateClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/certificates/{attr}/generate-and-download".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    string json = JsonSerializer.Serialize(keyStoreConfig, JsonConfig.Default);
-    HttpClientLog.LogTraceRequestBody(_logger, "POST", "application/json", json);
-    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-    HttpResponseMessage response = await _httpClient.PostAsync(url, content);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      string json = JsonSerializer.Serialize(keyStoreConfig, JsonConfig.Default);
+      HttpClientLog.LogTraceRequestBody(_logger, "POST", "application/json", json);
+      StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+      HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      return await response.Content.ReadAsStreamAsync(cancellationToken);
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string errorContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-    return await response.Content.ReadAsStreamAsync();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -184,7 +241,7 @@ public partial class ClientAttributeCertificateClient
   /// Upload certificate and eventually private key
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/certificates/{attr}/upload
   /// </summary>
-  public async Task<CertificateRepresentation> PostAdminRealmsClientsCertificatesUploadAsync(string realm, string clientUuid, string attr)
+  public async Task<CertificateRepresentation> PostAdminRealmsClientsCertificatesUploadAsync(string realm, string clientUuid, string attr, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -194,28 +251,41 @@ public partial class ClientAttributeCertificateClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/certificates/{attr}/upload".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CertificateRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CertificateRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -223,7 +293,7 @@ public partial class ClientAttributeCertificateClient
   /// Upload only certificate, not private key
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/certificates/{attr}/upload-certificate
   /// </summary>
-  public async Task<CertificateRepresentation> PostAdminRealmsClientsCertificatesUploadCertificateAsync(string realm, string clientUuid, string attr)
+  public async Task<CertificateRepresentation> PostAdminRealmsClientsCertificatesUploadCertificateAsync(string realm, string clientUuid, string attr, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -233,28 +303,41 @@ public partial class ClientAttributeCertificateClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/certificates/{attr}/upload-certificate".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CertificateRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CertificateRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -262,7 +345,7 @@ public partial class ClientAttributeCertificateClient
   /// Uploads a certificate, prepares the jwks or public key associated, and returns the certificate representation.
   /// Operation: POST /admin/realms/{realm}/identity-provider/upload-certificate
   /// </summary>
-  public async Task<CertificateRepresentation> PostClientAttributeCertificateAsync(string realm)
+  public async Task<CertificateRepresentation> PostClientAttributeCertificateAsync(string realm, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -270,28 +353,41 @@ public partial class ClientAttributeCertificateClient
     };
     string url = "realms/{realm}/identity-provider/upload-certificate".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CertificateRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CertificateRepresentation? result = JsonSerializer.Deserialize<CertificateRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CertificateRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 

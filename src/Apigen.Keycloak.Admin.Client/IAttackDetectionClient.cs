@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 
@@ -15,18 +16,18 @@ public partial interface IAttackDetectionClient
   /// Clear any user login failures for all users This can release temporary disabled users
   /// Operation: DELETE /admin/realms/{realm}/attack-detection/brute-force/users
   /// </summary>
-  Task DeleteAttackDetectionAsync(string realm);
+  Task DeleteAttackDetectionAsync(string realm, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get status of a username in brute force detection
   /// Operation: GET /admin/realms/{realm}/attack-detection/brute-force/users/{userId}
   /// </summary>
-  Task<JsonElement> GetAsync(string userId, string realm);
+  Task<JsonElement> GetAsync(string userId, string realm, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Clear any user login failures for the user This can release temporary disabled user
   /// Operation: DELETE /admin/realms/{realm}/attack-detection/brute-force/users/{userId}
   /// </summary>
-  Task DeleteAsync(string userId, string realm);
+  Task DeleteAsync(string userId, string realm, CancellationToken cancellationToken = default);
 
 }

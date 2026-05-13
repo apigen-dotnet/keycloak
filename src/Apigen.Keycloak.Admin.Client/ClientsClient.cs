@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 using Microsoft.Extensions.Logging;
@@ -29,7 +30,7 @@ public partial class ClientsClient
   /// Get clients belonging to the realm.
   /// Operation: GET /admin/realms/{realm}/clients
   /// </summary>
-  public async Task<List<ClientRepresentation>> GetClientsAsync(string realm, GetClientsRequest? request = null)
+  public async Task<List<ClientRepresentation>> GetClientsAsync(string realm, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -37,28 +38,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<ClientRepresentation>? result = JsonSerializer.Deserialize<List<ClientRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<ClientRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<ClientRepresentation>? result = JsonSerializer.Deserialize<List<ClientRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<ClientRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -66,7 +80,7 @@ public partial class ClientsClient
   /// Create a new client Client’s client_id must be unique!
   /// Operation: POST /admin/realms/{realm}/clients
   /// </summary>
-  public async Task PostClientsAsync(string realm, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation)
+  public async Task PostClientsAsync(string realm, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -74,23 +88,38 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    string json = JsonSerializer.Serialize(clientRepresentation, JsonConfig.Default);
-    HttpClientLog.LogTraceRequestBody(_logger, "POST", "application/json", json);
-    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-    HttpResponseMessage response = await _httpClient.PostAsync(url, content);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      string json = JsonSerializer.Serialize(clientRepresentation, JsonConfig.Default);
+      HttpClientLog.LogTraceRequestBody(_logger, "POST", "application/json", json);
+      StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+      HttpResponseMessage response = await _httpClient.PostAsync(url, content, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
       throw;
     }
   }
@@ -100,7 +129,7 @@ public partial class ClientsClient
   /// Get representation of the client
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}
   /// </summary>
-  public async Task<ClientRepresentation> GetAsync(string realm, string clientUuid)
+  public async Task<ClientRepresentation> GetAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -109,28 +138,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      ClientRepresentation? result = JsonSerializer.Deserialize<ClientRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new ClientRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    ClientRepresentation? result = JsonSerializer.Deserialize<ClientRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new ClientRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -138,7 +180,7 @@ public partial class ClientsClient
   /// Update the client
   /// Operation: PUT /admin/realms/{realm}/clients/{client-uuid}
   /// </summary>
-  public async Task UpdateAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation)
+  public async Task UpdateAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ClientRepresentation clientRepresentation, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -147,23 +189,38 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
-    string json = JsonSerializer.Serialize(clientRepresentation, JsonConfig.Default);
-    HttpClientLog.LogTraceRequestBody(_logger, "PUT", "application/json", json);
-    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-    HttpResponseMessage response = await _httpClient.PutAsync(url, content);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
+      string json = JsonSerializer.Serialize(clientRepresentation, JsonConfig.Default);
+      HttpClientLog.LogTraceRequestBody(_logger, "PUT", "application/json", json);
+      StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+      HttpResponseMessage response = await _httpClient.PutAsync(url, content, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "PUT", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "PUT", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "PUT", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "PUT", url, ex);
       throw;
     }
   }
@@ -173,7 +230,7 @@ public partial class ClientsClient
   /// Delete the client
   /// Operation: DELETE /admin/realms/{realm}/clients/{client-uuid}
   /// </summary>
-  public async Task DeleteAsync(string realm, string clientUuid)
+  public async Task DeleteAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -182,20 +239,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
-    HttpResponseMessage response = await _httpClient.DeleteAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
+      HttpResponseMessage response = await _httpClient.DeleteAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "DELETE", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "DELETE", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "DELETE", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "DELETE", url, ex);
       throw;
     }
   }
@@ -205,7 +277,7 @@ public partial class ClientsClient
   /// Get the client secret
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/client-secret
   /// </summary>
-  public async Task<CredentialRepresentation> GetClientsAsync(string realm, string clientUuid)
+  public async Task<CredentialRepresentation> GetClientsAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -214,28 +286,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/client-secret".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CredentialRepresentation? result = JsonSerializer.Deserialize<CredentialRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CredentialRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CredentialRepresentation? result = JsonSerializer.Deserialize<CredentialRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CredentialRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -243,7 +328,7 @@ public partial class ClientsClient
   /// Generate a new secret for the client
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/client-secret
   /// </summary>
-  public async Task<CredentialRepresentation> PostClientsAsync(string realm, string clientUuid)
+  public async Task<CredentialRepresentation> PostClientsAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -252,28 +337,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/client-secret".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CredentialRepresentation? result = JsonSerializer.Deserialize<CredentialRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CredentialRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CredentialRepresentation? result = JsonSerializer.Deserialize<CredentialRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CredentialRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -281,7 +379,7 @@ public partial class ClientsClient
   /// Get the rotated client secret
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/client-secret/rotated
   /// </summary>
-  public async Task<CredentialRepresentation> GetAdminRealmsClientsClientSecretRotatedAsync(string realm, string clientUuid)
+  public async Task<CredentialRepresentation> GetAdminRealmsClientsClientSecretRotatedAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -290,28 +388,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/client-secret/rotated".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      CredentialRepresentation? result = JsonSerializer.Deserialize<CredentialRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new CredentialRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    CredentialRepresentation? result = JsonSerializer.Deserialize<CredentialRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new CredentialRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -319,7 +430,7 @@ public partial class ClientsClient
   /// Invalidate the rotated secret for the client
   /// Operation: DELETE /admin/realms/{realm}/clients/{client-uuid}/client-secret/rotated
   /// </summary>
-  public async Task DeleteClientsAsync(string realm, string clientUuid)
+  public async Task DeleteClientsAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -328,20 +439,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/client-secret/rotated".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
-    HttpResponseMessage response = await _httpClient.DeleteAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
+      HttpResponseMessage response = await _httpClient.DeleteAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "DELETE", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "DELETE", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "DELETE", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "DELETE", url, ex);
       throw;
     }
   }
@@ -351,7 +477,7 @@ public partial class ClientsClient
   /// Get default client scopes.  Only name and ids are returned.
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/default-client-scopes
   /// </summary>
-  public async Task<List<ClientScopeRepresentation>> GetAdminRealmsClientsDefaultClientScopesAsync(string realm, string clientUuid)
+  public async Task<List<ClientScopeRepresentation>> GetAdminRealmsClientsDefaultClientScopesAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -360,28 +486,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/default-client-scopes".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<ClientScopeRepresentation>? result = JsonSerializer.Deserialize<List<ClientScopeRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<ClientScopeRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<ClientScopeRepresentation>? result = JsonSerializer.Deserialize<List<ClientScopeRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<ClientScopeRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -389,7 +528,7 @@ public partial class ClientsClient
   /// 
   /// Operation: PUT /admin/realms/{realm}/clients/{client-uuid}/default-client-scopes/{clientScopeId}
   /// </summary>
-  public async Task UpdateAsync(string clientScopeId, string realm, string clientUuid)
+  public async Task UpdateAsync(string clientScopeId, string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -399,20 +538,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/default-client-scopes/{clientScopeId}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
-    HttpResponseMessage response = await _httpClient.PutAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
+      HttpResponseMessage response = await _httpClient.PutAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "PUT", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "PUT", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "PUT", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "PUT", url, ex);
       throw;
     }
   }
@@ -422,7 +576,7 @@ public partial class ClientsClient
   /// 
   /// Operation: DELETE /admin/realms/{realm}/clients/{client-uuid}/default-client-scopes/{clientScopeId}
   /// </summary>
-  public async Task DeleteAsync(string clientScopeId, string realm, string clientUuid)
+  public async Task DeleteAsync(string clientScopeId, string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -432,20 +586,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/default-client-scopes/{clientScopeId}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
-    HttpResponseMessage response = await _httpClient.DeleteAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
+      HttpResponseMessage response = await _httpClient.DeleteAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "DELETE", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "DELETE", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "DELETE", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "DELETE", url, ex);
       throw;
     }
   }
@@ -455,7 +624,7 @@ public partial class ClientsClient
   /// Create JSON with payload of example access token
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/evaluate-scopes/generate-example-access-token
   /// </summary>
-  public async Task<AccessToken> GetClientsAsync(string realm, string clientUuid, GetClientsRequest? request = null)
+  public async Task<AccessToken> GetClientsAsync(string realm, string clientUuid, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -464,28 +633,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/evaluate-scopes/generate-example-access-token".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      AccessToken? result = JsonSerializer.Deserialize<AccessToken>(responseContent, JsonConfig.Default);
+      return result ?? new AccessToken();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    AccessToken? result = JsonSerializer.Deserialize<AccessToken>(responseContent, JsonConfig.Default);
-    return result ?? new AccessToken();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -493,7 +675,7 @@ public partial class ClientsClient
   /// Create JSON with payload of example id token
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/evaluate-scopes/generate-example-id-token
   /// </summary>
-  public async Task<IdToken> GetAdminRealmsClientsEvaluateScopesGenerateExampleIdTokenAsync(string realm, string clientUuid, GetClientsRequest? request = null)
+  public async Task<IdToken> GetAdminRealmsClientsEvaluateScopesGenerateExampleIdTokenAsync(string realm, string clientUuid, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -502,28 +684,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/evaluate-scopes/generate-example-id-token".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      IdToken? result = JsonSerializer.Deserialize<IdToken>(responseContent, JsonConfig.Default);
+      return result ?? new IdToken();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    IdToken? result = JsonSerializer.Deserialize<IdToken>(responseContent, JsonConfig.Default);
-    return result ?? new IdToken();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -531,7 +726,7 @@ public partial class ClientsClient
   /// Create JSON with payload of example user info
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/evaluate-scopes/generate-example-userinfo
   /// </summary>
-  public async Task<JsonElement> GetAdminRealmsClientsEvaluateScopesGenerateExampleUserinfoAsync(string realm, string clientUuid, GetClientsRequest? request = null)
+  public async Task<JsonElement> GetAdminRealmsClientsEvaluateScopesGenerateExampleUserinfoAsync(string realm, string clientUuid, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -540,28 +735,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/evaluate-scopes/generate-example-userinfo".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      JsonElement result = JsonSerializer.Deserialize<JsonElement>(responseContent, JsonConfig.Default);
+      return result;
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    JsonElement result = JsonSerializer.Deserialize<JsonElement>(responseContent, JsonConfig.Default);
-    return result;
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -569,7 +777,7 @@ public partial class ClientsClient
   /// Return list of all protocol mappers, which will be used when generating tokens issued for particular client.
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/evaluate-scopes/protocol-mappers
   /// </summary>
-  public async Task<List<ProtocolMapperEvaluationRepresentation>> GetAdminRealmsClientsEvaluateScopesProtocolMappersAsync(string realm, string clientUuid, GetClientsRequest? request = null)
+  public async Task<List<ProtocolMapperEvaluationRepresentation>> GetAdminRealmsClientsEvaluateScopesProtocolMappersAsync(string realm, string clientUuid, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -578,28 +786,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/evaluate-scopes/protocol-mappers".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<ProtocolMapperEvaluationRepresentation>? result = JsonSerializer.Deserialize<List<ProtocolMapperEvaluationRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<ProtocolMapperEvaluationRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<ProtocolMapperEvaluationRepresentation>? result = JsonSerializer.Deserialize<List<ProtocolMapperEvaluationRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<ProtocolMapperEvaluationRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -607,7 +828,7 @@ public partial class ClientsClient
   /// Get effective scope mapping of all roles of particular role container, which this client is defacto allowed to have in the accessToken issued for him.
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/evaluate-scopes/scope-mappings/{roleContainerId}/granted
   /// </summary>
-  public async Task<List<RoleRepresentation>> GetClientsAsync(string realm, string clientUuid, string roleContainerId, GetClientsRequest? request = null)
+  public async Task<List<RoleRepresentation>> GetClientsAsync(string realm, string clientUuid, string roleContainerId, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -617,28 +838,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/evaluate-scopes/scope-mappings/{roleContainerId}/granted".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<RoleRepresentation>? result = JsonSerializer.Deserialize<List<RoleRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<RoleRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<RoleRepresentation>? result = JsonSerializer.Deserialize<List<RoleRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<RoleRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -646,7 +880,7 @@ public partial class ClientsClient
   /// Get roles, which this client doesn&apos;t have scope for and can&apos;t have them in the accessToken issued for him.
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/evaluate-scopes/scope-mappings/{roleContainerId}/not-granted
   /// </summary>
-  public async Task<List<RoleRepresentation>> GetAdminRealmsClientsEvaluateScopesScopeMappingsNotGrantedAsync(string realm, string clientUuid, string roleContainerId, GetClientsRequest? request = null)
+  public async Task<List<RoleRepresentation>> GetAdminRealmsClientsEvaluateScopesScopeMappingsNotGrantedAsync(string realm, string clientUuid, string roleContainerId, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -656,28 +890,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/evaluate-scopes/scope-mappings/{roleContainerId}/not-granted".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<RoleRepresentation>? result = JsonSerializer.Deserialize<List<RoleRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<RoleRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<RoleRepresentation>? result = JsonSerializer.Deserialize<List<RoleRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<RoleRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -685,7 +932,7 @@ public partial class ClientsClient
   /// 
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/installation/providers/{providerId}
   /// </summary>
-  public async Task GetAsync(string providerId, string realm, string clientUuid)
+  public async Task GetAsync(string providerId, string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -695,20 +942,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/installation/providers/{providerId}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
       throw;
     }
   }
@@ -718,7 +980,7 @@ public partial class ClientsClient
   /// Return object stating whether client Authorization permissions have been initialized or not and a reference
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/management/permissions
   /// </summary>
-  public async Task<ManagementPermissionReference> GetAdminRealmsClientsManagementPermissionsAsync(string realm, string clientUuid)
+  public async Task<ManagementPermissionReference> GetAdminRealmsClientsManagementPermissionsAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -727,28 +989,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/management/permissions".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      ManagementPermissionReference? result = JsonSerializer.Deserialize<ManagementPermissionReference>(responseContent, JsonConfig.Default);
+      return result ?? new ManagementPermissionReference();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    ManagementPermissionReference? result = JsonSerializer.Deserialize<ManagementPermissionReference>(responseContent, JsonConfig.Default);
-    return result ?? new ManagementPermissionReference();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -756,7 +1031,7 @@ public partial class ClientsClient
   /// Return object stating whether client Authorization permissions have been initialized or not and a reference
   /// Operation: PUT /admin/realms/{realm}/clients/{client-uuid}/management/permissions
   /// </summary>
-  public async Task<ManagementPermissionReference> PutClientsAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ManagementPermissionReference managementPermissionReference)
+  public async Task<ManagementPermissionReference> PutClientsAsync(string realm, string clientUuid, Apigen.Keycloak.Admin.Models.ManagementPermissionReference managementPermissionReference, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -765,31 +1040,44 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/management/permissions".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
-    string json = JsonSerializer.Serialize(managementPermissionReference, JsonConfig.Default);
-    HttpClientLog.LogTraceRequestBody(_logger, "PUT", "application/json", json);
-    StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
-    HttpResponseMessage response = await _httpClient.PutAsync(url, content);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
+      string json = JsonSerializer.Serialize(managementPermissionReference, JsonConfig.Default);
+      HttpClientLog.LogTraceRequestBody(_logger, "PUT", "application/json", json);
+      StringContent content = new StringContent(json, Encoding.UTF8, "application/json");
+      HttpResponseMessage response = await _httpClient.PutAsync(url, content, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "PUT", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      ManagementPermissionReference? result = JsonSerializer.Deserialize<ManagementPermissionReference>(responseContent, JsonConfig.Default);
+      return result ?? new ManagementPermissionReference();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "PUT", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    ManagementPermissionReference? result = JsonSerializer.Deserialize<ManagementPermissionReference>(responseContent, JsonConfig.Default);
-    return result ?? new ManagementPermissionReference();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "PUT", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "PUT", url, ex);
+      throw;
+    }
   }
 
 
@@ -797,7 +1085,7 @@ public partial class ClientsClient
   /// Register a cluster node with the client Manually register cluster node to this client - usually it’s not needed to call this directly as adapter should handle by sending registration request to Keycloak
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/nodes
   /// </summary>
-  public async Task PostAdminRealmsClientsNodesAsync(string realm, string clientUuid)
+  public async Task PostAdminRealmsClientsNodesAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -806,20 +1094,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/nodes".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
       throw;
     }
   }
@@ -829,7 +1132,7 @@ public partial class ClientsClient
   /// Unregister a cluster node from the client
   /// Operation: DELETE /admin/realms/{realm}/clients/{client-uuid}/nodes/{node}
   /// </summary>
-  public async Task DeleteAdminRealmsClientsNodesAsync(string node, string realm, string clientUuid)
+  public async Task DeleteAdminRealmsClientsNodesAsync(string node, string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -839,20 +1142,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/nodes/{node}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
-    HttpResponseMessage response = await _httpClient.DeleteAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
+      HttpResponseMessage response = await _httpClient.DeleteAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "DELETE", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "DELETE", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "DELETE", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "DELETE", url, ex);
       throw;
     }
   }
@@ -862,7 +1180,7 @@ public partial class ClientsClient
   /// Get application offline session count Returns a number of offline user sessions associated with this client { &quot;count&quot;: number }
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/offline-session-count
   /// </summary>
-  public async Task<JsonElement> GetAdminRealmsClientsOfflineSessionCountAsync(string realm, string clientUuid)
+  public async Task<JsonElement> GetAdminRealmsClientsOfflineSessionCountAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -871,28 +1189,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/offline-session-count".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      JsonElement result = JsonSerializer.Deserialize<JsonElement>(responseContent, JsonConfig.Default);
+      return result;
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    JsonElement result = JsonSerializer.Deserialize<JsonElement>(responseContent, JsonConfig.Default);
-    return result;
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -900,7 +1231,7 @@ public partial class ClientsClient
   /// Get offline sessions for client Returns a list of offline user sessions associated with this client
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/offline-sessions
   /// </summary>
-  public async Task<List<UserSessionRepresentation>> GetAdminRealmsClientsOfflineSessionsAsync(string realm, string clientUuid, GetClientsRequest? request = null)
+  public async Task<List<UserSessionRepresentation>> GetAdminRealmsClientsOfflineSessionsAsync(string realm, string clientUuid, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -909,28 +1240,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/offline-sessions".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<UserSessionRepresentation>? result = JsonSerializer.Deserialize<List<UserSessionRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<UserSessionRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<UserSessionRepresentation>? result = JsonSerializer.Deserialize<List<UserSessionRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<UserSessionRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -938,7 +1282,7 @@ public partial class ClientsClient
   /// Get optional client scopes.  Only name and ids are returned.
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/optional-client-scopes
   /// </summary>
-  public async Task<List<ClientScopeRepresentation>> GetAdminRealmsClientsOptionalClientScopesAsync(string realm, string clientUuid)
+  public async Task<List<ClientScopeRepresentation>> GetAdminRealmsClientsOptionalClientScopesAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -947,28 +1291,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/optional-client-scopes".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<ClientScopeRepresentation>? result = JsonSerializer.Deserialize<List<ClientScopeRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<ClientScopeRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<ClientScopeRepresentation>? result = JsonSerializer.Deserialize<List<ClientScopeRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<ClientScopeRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -976,7 +1333,7 @@ public partial class ClientsClient
   /// 
   /// Operation: PUT /admin/realms/{realm}/clients/{client-uuid}/optional-client-scopes/{clientScopeId}
   /// </summary>
-  public async Task PutAdminRealmsClientsOptionalClientScopesAsync(string clientScopeId, string realm, string clientUuid)
+  public async Task PutAdminRealmsClientsOptionalClientScopesAsync(string clientScopeId, string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -986,20 +1343,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/optional-client-scopes/{clientScopeId}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
-    HttpResponseMessage response = await _httpClient.PutAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "PUT", url);
+      HttpResponseMessage response = await _httpClient.PutAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "PUT", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "PUT", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "PUT", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "PUT", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "PUT", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "PUT", url, ex);
       throw;
     }
   }
@@ -1009,7 +1381,7 @@ public partial class ClientsClient
   /// 
   /// Operation: DELETE /admin/realms/{realm}/clients/{client-uuid}/optional-client-scopes/{clientScopeId}
   /// </summary>
-  public async Task DeleteAdminRealmsClientsOptionalClientScopesAsync(string clientScopeId, string realm, string clientUuid)
+  public async Task DeleteAdminRealmsClientsOptionalClientScopesAsync(string clientScopeId, string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -1019,20 +1391,35 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/optional-client-scopes/{clientScopeId}".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
-    HttpResponseMessage response = await _httpClient.DeleteAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
-
     try
     {
-      response.EnsureSuccessStatusCode();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "DELETE", url);
+      HttpResponseMessage response = await _httpClient.DeleteAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "DELETE", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "DELETE", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      string responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "DELETE", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "DELETE", url);
+      throw;
+    }
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "DELETE", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "DELETE", url, ex);
       throw;
     }
   }
@@ -1042,7 +1429,7 @@ public partial class ClientsClient
   /// Push the client&apos;s revocation policy to its admin URL If the client has an admin URL, push revocation policy to it.
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/push-revocation
   /// </summary>
-  public async Task<GlobalRequestResult> PostAdminRealmsClientsPushRevocationAsync(string realm, string clientUuid)
+  public async Task<GlobalRequestResult> PostAdminRealmsClientsPushRevocationAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -1051,28 +1438,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/push-revocation".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      GlobalRequestResult? result = JsonSerializer.Deserialize<GlobalRequestResult>(responseContent, JsonConfig.Default);
+      return result ?? new GlobalRequestResult();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    GlobalRequestResult? result = JsonSerializer.Deserialize<GlobalRequestResult>(responseContent, JsonConfig.Default);
-    return result ?? new GlobalRequestResult();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -1080,7 +1480,7 @@ public partial class ClientsClient
   /// Generate a new registration access token for the client
   /// Operation: POST /admin/realms/{realm}/clients/{client-uuid}/registration-access-token
   /// </summary>
-  public async Task<ClientRepresentation> PostAdminRealmsClientsRegistrationAccessTokenAsync(string realm, string clientUuid)
+  public async Task<ClientRepresentation> PostAdminRealmsClientsRegistrationAccessTokenAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -1089,28 +1489,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/registration-access-token".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
-    HttpResponseMessage response = await _httpClient.PostAsync(url, null);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "POST", url);
+      HttpResponseMessage response = await _httpClient.PostAsync(url, null, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "POST", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "POST", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      ClientRepresentation? result = JsonSerializer.Deserialize<ClientRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new ClientRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "POST", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "POST", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    ClientRepresentation? result = JsonSerializer.Deserialize<ClientRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new ClientRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "POST", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "POST", url, ex);
+      throw;
+    }
   }
 
 
@@ -1118,7 +1531,7 @@ public partial class ClientsClient
   /// Get a user dedicated to the service account
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/service-account-user
   /// </summary>
-  public async Task<UserRepresentation> GetAdminRealmsClientsServiceAccountUserAsync(string realm, string clientUuid)
+  public async Task<UserRepresentation> GetAdminRealmsClientsServiceAccountUserAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -1127,28 +1540,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/service-account-user".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      UserRepresentation? result = JsonSerializer.Deserialize<UserRepresentation>(responseContent, JsonConfig.Default);
+      return result ?? new UserRepresentation();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    UserRepresentation? result = JsonSerializer.Deserialize<UserRepresentation>(responseContent, JsonConfig.Default);
-    return result ?? new UserRepresentation();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -1156,7 +1582,7 @@ public partial class ClientsClient
   /// Get application session count Returns a number of user sessions associated with this client { &quot;count&quot;: number }
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/session-count
   /// </summary>
-  public async Task<JsonElement> GetAdminRealmsClientsSessionCountAsync(string realm, string clientUuid)
+  public async Task<JsonElement> GetAdminRealmsClientsSessionCountAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -1165,28 +1591,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/session-count".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      JsonElement result = JsonSerializer.Deserialize<JsonElement>(responseContent, JsonConfig.Default);
+      return result;
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    JsonElement result = JsonSerializer.Deserialize<JsonElement>(responseContent, JsonConfig.Default);
-    return result;
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -1194,7 +1633,7 @@ public partial class ClientsClient
   /// Test if registered cluster nodes are available Tests availability by sending &apos;ping&apos; request to all cluster nodes.
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/test-nodes-available
   /// </summary>
-  public async Task<GlobalRequestResult> GetAdminRealmsClientsTestNodesAvailableAsync(string realm, string clientUuid)
+  public async Task<GlobalRequestResult> GetAdminRealmsClientsTestNodesAvailableAsync(string realm, string clientUuid, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -1203,28 +1642,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/test-nodes-available".BuildUrl(pathParams);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      GlobalRequestResult? result = JsonSerializer.Deserialize<GlobalRequestResult>(responseContent, JsonConfig.Default);
+      return result ?? new GlobalRequestResult();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    GlobalRequestResult? result = JsonSerializer.Deserialize<GlobalRequestResult>(responseContent, JsonConfig.Default);
-    return result ?? new GlobalRequestResult();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 
@@ -1233,7 +1685,7 @@ public partial class ClientsClient
   /// 
   /// Operation: GET /admin/realms/{realm}/clients/{client-uuid}/user-sessions
   /// </summary>
-  public async Task<List<UserSessionRepresentation>> GetAdminRealmsClientsUserSessionsAsync(string realm, string clientUuid, GetClientsRequest? request = null)
+  public async Task<List<UserSessionRepresentation>> GetAdminRealmsClientsUserSessionsAsync(string realm, string clientUuid, GetClientsRequest? request = null, CancellationToken cancellationToken = default)
   {
     Dictionary<string, object> pathParams = new()
     {
@@ -1242,28 +1694,41 @@ public partial class ClientsClient
     };
     string url = "realms/{realm}/clients/{client-uuid}/user-sessions".BuildUrl(pathParams, request);
 
-    long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
-    HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
-    HttpResponseMessage response = await _httpClient.GetAsync(url);
-    long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
-    HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
-
-    string responseContent;
     try
     {
-      response.EnsureSuccessStatusCode();
-      responseContent = await response.Content.ReadAsStringAsync();
+      long startTimestamp = System.Diagnostics.Stopwatch.GetTimestamp();
+      HttpClientLog.LogDebugRequestStarted(_logger, "GET", url);
+      HttpResponseMessage response = await _httpClient.GetAsync(url, cancellationToken);
+      long durationMs = (long)System.Diagnostics.Stopwatch.GetElapsedTime(startTimestamp).TotalMilliseconds;
+      HttpClientLog.LogDebugRequestCompleted(_logger, (int)response.StatusCode, "GET", url, durationMs);
+
+      if (!response.IsSuccessStatusCode)
+      {
+        string errorBody = await response.Content.ReadAsStringAsync(cancellationToken);
+        HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, errorBody, null);
+        throw new ApiException(response.StatusCode, "GET", url, errorBody, response.Headers, response.Content.Headers);
+      }
+
+      string responseContent = await response.Content.ReadAsStringAsync(cancellationToken);
+      HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
+      List<UserSessionRepresentation>? result = JsonSerializer.Deserialize<List<UserSessionRepresentation>>(responseContent, JsonConfig.Default);
+      return result ?? new List<UserSessionRepresentation>();
     }
-    catch (HttpRequestException ex)
+    catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
     {
-      responseContent = await response.Content.ReadAsStringAsync();
-      HttpClientLog.LogErrorRequestFailed(_logger, (int)response.StatusCode, "GET", url, responseContent, ex);
+      HttpClientLog.LogDebugRequestCancelled(_logger, "GET", url);
       throw;
     }
-
-    HttpClientLog.LogTraceResponseBody(_logger, url, responseContent);
-    List<UserSessionRepresentation>? result = JsonSerializer.Deserialize<List<UserSessionRepresentation>>(responseContent, JsonConfig.Default);
-    return result ?? new List<UserSessionRepresentation>();
+    catch (OperationCanceledException ex)
+    {
+      HttpClientLog.LogErrorRequestTimeout(_logger, "GET", url, ex);
+      throw;
+    }
+    catch (HttpRequestException ex) when (ex is not ApiException)
+    {
+      HttpClientLog.LogErrorTransportFailure(_logger, "GET", url, ex);
+      throw;
+    }
   }
 
 

@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 
@@ -15,6 +16,6 @@ public partial interface IKeyClient
   /// 
   /// Operation: GET /admin/realms/{realm}/keys
   /// </summary>
-  Task<KeysMetadataRepresentation> GetAsync(string realm);
+  Task<KeysMetadataRepresentation> GetAsync(string realm, CancellationToken cancellationToken = default);
 
 }

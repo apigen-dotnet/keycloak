@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 
@@ -15,18 +16,18 @@ public partial interface IClientInitialAccessClient
   /// 
   /// Operation: GET /admin/realms/{realm}/clients-initial-access
   /// </summary>
-  Task<List<ClientInitialAccessPresentation>> GetClientInitialAccessAsync(string realm);
+  Task<List<ClientInitialAccessPresentation>> GetClientInitialAccessAsync(string realm, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Create a new initial access token.
   /// Operation: POST /admin/realms/{realm}/clients-initial-access
   /// </summary>
-  Task<ClientInitialAccessCreatePresentation> PostClientInitialAccessAsync(string realm, Apigen.Keycloak.Admin.Models.ClientInitialAccessCreatePresentation clientInitialAccessCreatePresentation);
+  Task<ClientInitialAccessCreatePresentation> PostClientInitialAccessAsync(string realm, Apigen.Keycloak.Admin.Models.ClientInitialAccessCreatePresentation clientInitialAccessCreatePresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// 
   /// Operation: DELETE /admin/realms/{realm}/clients-initial-access/{id}
   /// </summary>
-  Task DeleteAsync(string id, string realm);
+  Task DeleteAsync(string id, string realm, CancellationToken cancellationToken = default);
 
 }

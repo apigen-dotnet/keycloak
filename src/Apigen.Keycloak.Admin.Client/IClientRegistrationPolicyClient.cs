@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 
@@ -15,6 +16,6 @@ public partial interface IClientRegistrationPolicyClient
   /// Base path for retrieve providers with the configProperties properly filled
   /// Operation: GET /admin/realms/{realm}/client-registration-policy/providers
   /// </summary>
-  Task<List<ComponentTypeRepresentation>> GetClientRegistrationPolicyAsync(string realm);
+  Task<List<ComponentTypeRepresentation>> GetClientRegistrationPolicyAsync(string realm, CancellationToken cancellationToken = default);
 
 }

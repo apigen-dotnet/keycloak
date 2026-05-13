@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Apigen.Keycloak.Admin.Models;
 
@@ -15,66 +16,66 @@ public partial interface IGroupsClient
   /// Get group hierarchy.  Only `name` and `id` are returned.  `subGroups` are only returned when using the `search` or `q` parameter. If none of these parameters is provided, the top-level groups are returned without `subGroups` being filled.
   /// Operation: GET /admin/realms/{realm}/groups
   /// </summary>
-  Task<List<GroupRepresentation>> GetGroupsAsync(string realm, GetGroupsRequest? request = null);
+  Task<List<GroupRepresentation>> GetGroupsAsync(string realm, GetGroupsRequest? request = null, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// create or add a top level realm groupSet or create child.
   /// Operation: POST /admin/realms/{realm}/groups
   /// </summary>
-  Task PostGroupsAsync(string realm, Apigen.Keycloak.Admin.Models.GroupRepresentation groupRepresentation);
+  Task PostGroupsAsync(string realm, Apigen.Keycloak.Admin.Models.GroupRepresentation groupRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Returns the groups counts.
   /// Operation: GET /admin/realms/{realm}/groups/count
   /// </summary>
-  Task<JsonElement> GetAdminRealmsGroupsCountAsync(string realm, GetGroupsRequest? request = null);
+  Task<JsonElement> GetAdminRealmsGroupsCountAsync(string realm, GetGroupsRequest? request = null, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// 
   /// Operation: GET /admin/realms/{realm}/groups/{group-id}
   /// </summary>
-  Task<GroupRepresentation> GetAsync(string realm, string groupId);
+  Task<GroupRepresentation> GetAsync(string realm, string groupId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Update group, ignores subgroups.
   /// Operation: PUT /admin/realms/{realm}/groups/{group-id}
   /// </summary>
-  Task UpdateAsync(string realm, string groupId, Apigen.Keycloak.Admin.Models.GroupRepresentation groupRepresentation);
+  Task UpdateAsync(string realm, string groupId, Apigen.Keycloak.Admin.Models.GroupRepresentation groupRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// 
   /// Operation: DELETE /admin/realms/{realm}/groups/{group-id}
   /// </summary>
-  Task DeleteAsync(string realm, string groupId);
+  Task DeleteAsync(string realm, string groupId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Return a paginated list of subgroups that have a parent group corresponding to the group on the URL
   /// Operation: GET /admin/realms/{realm}/groups/{group-id}/children
   /// </summary>
-  Task<List<GroupRepresentation>> GetGroupsAsync(string realm, string groupId, GetGroupsRequest? request = null);
+  Task<List<GroupRepresentation>> GetGroupsAsync(string realm, string groupId, GetGroupsRequest? request = null, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Set or create child.
   /// Operation: POST /admin/realms/{realm}/groups/{group-id}/children
   /// </summary>
-  Task PostGroupsAsync(string realm, string groupId, Apigen.Keycloak.Admin.Models.GroupRepresentation groupRepresentation);
+  Task PostGroupsAsync(string realm, string groupId, Apigen.Keycloak.Admin.Models.GroupRepresentation groupRepresentation, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Return object stating whether client Authorization permissions have been initialized or not and a reference
   /// Operation: GET /admin/realms/{realm}/groups/{group-id}/management/permissions
   /// </summary>
-  Task<ManagementPermissionReference> GetGroupsAsync(string realm, string groupId);
+  Task<ManagementPermissionReference> GetGroupsAsync(string realm, string groupId, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Return object stating whether client Authorization permissions have been initialized or not and a reference
   /// Operation: PUT /admin/realms/{realm}/groups/{group-id}/management/permissions
   /// </summary>
-  Task<ManagementPermissionReference> PutGroupsAsync(string realm, string groupId, Apigen.Keycloak.Admin.Models.ManagementPermissionReference managementPermissionReference);
+  Task<ManagementPermissionReference> PutGroupsAsync(string realm, string groupId, Apigen.Keycloak.Admin.Models.ManagementPermissionReference managementPermissionReference, CancellationToken cancellationToken = default);
 
   /// <summary>
   /// Get users Returns a stream of users, filtered according to query parameters
   /// Operation: GET /admin/realms/{realm}/groups/{group-id}/members
   /// </summary>
-  Task<List<UserRepresentation>> GetAdminRealmsGroupsMembersAsync(string realm, string groupId, GetGroupsRequest? request = null);
+  Task<List<UserRepresentation>> GetAdminRealmsGroupsMembersAsync(string realm, string groupId, GetGroupsRequest? request = null, CancellationToken cancellationToken = default);
 
 }
