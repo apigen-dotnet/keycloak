@@ -1,5 +1,10 @@
 # Changelog
 
+## [26.5.10] - 2026-07-28
+
+- Regenerated against Apigen.Generator 2.4.0.
+- Project files now use `<TargetFrameworks>` instead of `<TargetFramework>`, guarded by a condition so a repo-level `src/Directory.Build.props` can override it. No functional change: the client still targets `net10.0` only and build output is unchanged. See the [target framework policy](https://github.com/apigen-dotnet/generator/blob/main/docs/target-framework-policy.md).
+
 ## [26.5.9] - 2026-05-13
 
 - Regenerated against Apigen.Generator 2.3.0.
