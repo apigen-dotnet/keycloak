@@ -1,3 +1,4 @@
+prune = true
 # ApiGenerator Configuration File
 # Keycloak Admin REST API Client
 

@@ -35,4 +35,10 @@ public partial class PolicyProviderRepresentation
 
   [System.Text.Json.Serialization.JsonPropertyName("group")]
   public string? Group { get; set; }
+
+  [System.Text.Json.Serialization.JsonPropertyName("description")]
+  public string? Description { get; set; }
+
+  [System.Text.Json.Serialization.JsonPropertyName("code")]
+  public string? Code { get; set; }
 }

@@ -1,5 +1,5 @@
 enabled = true
 
 [[sources]]
-url = "https://www.keycloak.org/docs-api/latest/rest-api/openapi.yaml"
+url = "https://www.keycloak.org/docs-api/26.7.3/rest-api/openapi.yaml"
 target = "specs/keycloak.yaml"

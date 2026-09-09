@@ -17,12 +17,10 @@ using System.Text.Json.Serialization;
 namespace Apigen.Keycloak.Admin.Models;
 
 [JsonConverter(typeof(JsonStringEnumConverter))]
-public enum KeyUse
+public enum StepExecutionStatus
 {
-    [JsonStringEnumMemberName("SIG")]
-    Sig,
-    [JsonStringEnumMemberName("ENC")]
-    Enc,
-    [JsonStringEnumMemberName("JWT_SVID")]
-    JwtSvid,
+    [JsonStringEnumMemberName("COMPLETED")]
+    Completed,
+    [JsonStringEnumMemberName("PENDING")]
+    Pending,
 }

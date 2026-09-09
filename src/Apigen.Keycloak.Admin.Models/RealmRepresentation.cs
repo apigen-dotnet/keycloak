@@ -180,6 +180,9 @@ public partial class RealmRepresentation
   [System.Text.Json.Serialization.JsonPropertyName("failureFactor")]
   public int? FailureFactor { get; set; }
 
+  [System.Text.Json.Serialization.JsonPropertyName("maxSecondaryAuthFailures")]
+  public int? MaxSecondaryAuthFailures { get; set; }
+
   [System.Text.Json.Serialization.JsonPropertyName("privateKey")]
   public string? PrivateKey { get; set; }
 
@@ -261,6 +264,9 @@ public partial class RealmRepresentation
   [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyRequireResidentKey")]
   public string? WebAuthnPolicyRequireResidentKey { get; set; }
 
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyResidentKey")]
+  public string? WebAuthnPolicyResidentKey { get; set; }
+
   [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyUserVerificationRequirement")]
   public string? WebAuthnPolicyUserVerificationRequirement { get; set; }
 
@@ -294,6 +300,9 @@ public partial class RealmRepresentation
   [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessRequireResidentKey")]
   public string? WebAuthnPolicyPasswordlessRequireResidentKey { get; set; }
 
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessResidentKey")]
+  public string? WebAuthnPolicyPasswordlessResidentKey { get; set; }
+
   [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessUserVerificationRequirement")]
   public string? WebAuthnPolicyPasswordlessUserVerificationRequirement { get; set; }
 
@@ -311,6 +320,9 @@ public partial class RealmRepresentation
 
   [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessPasskeysEnabled")]
   public bool? WebAuthnPolicyPasswordlessPasskeysEnabled { get; set; }
+
+  [System.Text.Json.Serialization.JsonPropertyName("webAuthnPolicyPasswordlessMediation")]
+  public string? WebAuthnPolicyPasswordlessMediation { get; set; }
 
   [System.Text.Json.Serialization.JsonPropertyName("clientProfiles")]
   public ClientProfilesRepresentation? ClientProfiles { get; set; }
@@ -476,4 +488,7 @@ public partial class RealmRepresentation
 
   [System.Text.Json.Serialization.JsonPropertyName("clientTemplates")]
   public List<ClientTemplateRepresentation>? ClientTemplates { get; set; }
+
+  [System.Text.Json.Serialization.JsonPropertyName("scimApiEnabled")]
+  public bool? ScimApiEnabled { get; set; }
 }

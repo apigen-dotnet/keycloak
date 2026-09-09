@@ -96,6 +96,12 @@ public partial class MemberRepresentation
   [System.Text.Json.Serialization.JsonPropertyName("notBefore")]
   public int? NotBefore { get; set; }
 
+  [System.Text.Json.Serialization.JsonPropertyName("verifiableCredentials")]
+  public List<UserVerifiableCredentialRepresentation>? VerifiableCredentials { get; set; }
+
+  [System.Text.Json.Serialization.JsonPropertyName("issuedVerifiableCredentials")]
+  public List<IssuedVerifiableCredentialRepresentation>? IssuedVerifiableCredentials { get; set; }
+
   [System.Text.Json.Serialization.JsonPropertyName("applicationRoles")]
   public Dictionary<string, List<string?>?>? ApplicationRoles { get; set; }
 

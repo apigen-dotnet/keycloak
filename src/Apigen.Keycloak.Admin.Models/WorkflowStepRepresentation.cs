@@ -36,6 +36,9 @@ public partial class WorkflowStepRepresentation
   [System.Text.Json.Serialization.JsonPropertyName("scheduled-at")]
   public long? ScheduledAt { get; set; }
 
+  [System.Text.Json.Serialization.JsonPropertyName("status")]
+  public StepExecutionStatus? Status { get; set; }
+
   [System.Text.Json.Serialization.JsonPropertyName("id")]
   public string? Id { get; set; }
 

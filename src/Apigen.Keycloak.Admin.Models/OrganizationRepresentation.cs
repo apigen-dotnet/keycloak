@@ -56,4 +56,7 @@ public partial class OrganizationRepresentation
 
   [System.Text.Json.Serialization.JsonPropertyName("identityProviders")]
   public List<IdentityProviderRepresentation>? IdentityProviders { get; set; }
+
+  [System.Text.Json.Serialization.JsonPropertyName("groups")]
+  public List<GroupRepresentation>? Groups { get; set; }
 }

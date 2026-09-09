@@ -12,17 +12,21 @@
 // </auto-generated>
 //
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 using System.Text.Json.Serialization;
+
+#nullable enable
 
 namespace Apigen.Keycloak.Admin.Models;
 
-[JsonConverter(typeof(JsonStringEnumConverter))]
-public enum KeyUse
+/// <summary>
+/// SamlExampleResponse from OpenAPI schema.
+/// Schema path: #/components/schemas/SamlExampleResponse
+/// </summary>
+public partial class SamlExampleResponse
 {
-    [JsonStringEnumMemberName("SIG")]
-    Sig,
-    [JsonStringEnumMemberName("ENC")]
-    Enc,
-    [JsonStringEnumMemberName("JWT_SVID")]
-    JwtSvid,
+  [System.Text.Json.Serialization.JsonPropertyName("samlResponse")]
+  public string? SamlResponse { get; set; }
 }

@@ -22,17 +22,17 @@ using System.Text.Json.Serialization;
 namespace Apigen.Keycloak.Admin.Models;
 
 /// <summary>
-/// Confirmation from OpenAPI schema.
-/// Schema path: #/components/schemas/Confirmation
+/// VerifiableCredentialOfferActionConfig from OpenAPI schema.
+/// Schema path: #/components/schemas/VerifiableCredentialOfferActionConfig
 /// </summary>
-public partial class Confirmation
+public partial class VerifiableCredentialOfferActionConfig
 {
-  [System.Text.Json.Serialization.JsonPropertyName("x5t#S256")]
-  public string? X5THashS256 { get; set; }
+  [System.Text.Json.Serialization.JsonPropertyName("credentialConfigurationId")]
+  public string? CredentialConfigurationId { get; set; }
 
-  [System.Text.Json.Serialization.JsonPropertyName("jkt")]
-  public string? Jkt { get; set; }
+  [System.Text.Json.Serialization.JsonPropertyName("clientId")]
+  public string? ClientId { get; set; }
 
-  [System.Text.Json.Serialization.JsonPropertyName("kc-jkt-type")]
-  public string? KcJktType { get; set; }
+  [System.Text.Json.Serialization.JsonPropertyName("preAuthorized")]
+  public bool? PreAuthorized { get; set; }
 }

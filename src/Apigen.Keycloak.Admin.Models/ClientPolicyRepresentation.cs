@@ -36,6 +36,9 @@ public partial class ClientPolicyRepresentation
   [System.Text.Json.Serialization.JsonPropertyName("enabled")]
   public bool? Enabled { get; set; }
 
+  [System.Text.Json.Serialization.JsonPropertyName("mode")]
+  public string? Mode { get; set; }
+
   [System.Text.Json.Serialization.JsonPropertyName("conditions")]
   public List<ClientPolicyConditionRepresentation>? Conditions { get; set; }
 

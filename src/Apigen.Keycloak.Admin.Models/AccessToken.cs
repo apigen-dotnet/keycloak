@@ -152,4 +152,7 @@ public partial class AccessToken
 
   [System.Text.Json.Serialization.JsonPropertyName("scope")]
   public string? Scope { get; set; }
+
+  [System.Text.Json.Serialization.JsonPropertyName("authorization_details")]
+  public List<AuthorizationDetailsJsonRepresentation>? AuthorizationDetails { get; set; }
 }
